@@ -12,12 +12,13 @@ api = Api(quokka_app, version="1.0", title="Quokka", description="Quokka for 52-
           default="quokka", default_label="")
 ApiModels.set_api_models(api)
 
-from db_apis import get_all_hosts, set_host, get_portscan
+from db_apis import get_all_hosts, set_host
 from db_apis import get_all_devices, set_device
-from db_apis import get_all_services, set_service, get_traceroute
+from db_apis import get_all_services, set_service
+from db_apis import get_capture, get_portscan, get_traceroute
 
-from db_apis import record_portscan_data, record_traceroute_data
-from worker_apis import start_portscan, start_traceroute
+from db_apis import record_portscan_data, record_traceroute_data, record_capture_data
+from worker_apis import start_portscan, start_traceroute, start_capture
 
 
 @api.route("/hosts")
@@ -172,5 +173,60 @@ class WorkerTracerouteEndpoint(Resource):
     def post():
         traceroute_data = request.get_json()
         record_traceroute_data(traceroute_data)
+
+        return {}, 204
+
+
+@api.route("/capture")
+class CaptureEndpoint(Resource):
+
+    @staticmethod
+    @api.doc(params={"ip": "The ip address for which to capture packets",
+                     "protocol": "The protocol for which to capture packets",
+                     "port": "The port for which to capture packets",
+                     "num_packets": "The number of packets to retrieve"})
+    @api.response(200, 'Success', ApiModels.capture_data)
+    def get():
+
+        ip = request.args.get("ip")
+        protocol = request.args.get("protocol")
+        port = request.args.get("port")
+        num_packets = request.args.get("num_packets")
+
+        if not num_packets or not num_packets.isnumeric(): num_packets = 10
+        if port and port.isnumeric(): port = int(port)
+        else: port = None
+
+        return {"packets": get_capture(ip, protocol, port, int(num_packets))}
+
+    @staticmethod
+    @api.doc(params={"ip": "The ip address for which to capture packets",
+                     "protocol": "The protocol for which to capture packets",
+                     "port": "The port for which to capture packets",
+                     "capture_time": "The time to capture packets"})
+    @api.response(200, 'Capture initiated')
+    def post():
+
+        ip = request.args.get("ip")
+        protocol = request.args.get("protocol")
+        port = request.args.get("port")
+        capture_time = request.args.get("capture_time")
+
+        if not capture_time: capture_time = 180
+        else:  capture_time = int(capture_time)
+
+        start_capture(ip, protocol, port, capture_time)
+        return "Capture initiated", 200
+
+
+@api.route("/worker/capture")
+class WorkerCaptureEndpoint(Resource):
+
+    @staticmethod
+    @api.doc(body=ApiModels.capture_data)
+    @api.response(204, 'Success')
+    def post():
+        capture_data = request.get_json()
+        record_capture_data(capture_data)
 
         return {}, 204

@@ -50,4 +50,4 @@ class TracerouteThread(Thread):
         except BaseException as e:
             print(f"!!! Caught error attempting to do traceroute: {e}")
 
-        print(f"\n\n-----> TracerouteThread: competed traceroute")
+        print(f"\n\n-----> TracerouteThread: completed traceroute")

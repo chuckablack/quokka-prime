@@ -22,9 +22,10 @@ class CaptureThread(Thread):
 
         self.capture_filter = get_filter(
             capture_info["ip"], capture_info["protocol"], capture_info["port"]
-        )
+        ).lower()
         print(f"CaptureThread: listening on interface: {self.interface}, filter: {self.capture_filter}")
 
+        self.capture_time = capture_info["capture_time"]
         self.destination = destination
 
     @staticmethod
@@ -71,8 +72,8 @@ class CaptureThread(Thread):
         sniff(
             iface=self.interface,
             filter=self.capture_filter,
-            timeout=180,
+            timeout=self.capture_time,
             prn=self.process_packet,
         )
 
-        print(f"\n\n-----> CaptureThread: competed capture")
+        print(f"\n\n-----> CaptureThread: completed capture")

@@ -4,19 +4,30 @@ import requests
 from pprint import pprint, pformat
 import scapy.all as scapy
 
+protocol_mapping = {
+    "http": "tcp port 80",
+    "https": "tcp port 443",
+    "dns": "tcp port 53 or udp port 53",
+    "dhcp": "udp port 67 or udp port 68",
+    "ntp": "udp port 123"
+}
+
 
 def get_filter(ip, protocol, port):
 
     capture_filter = ""
     if ip:
         capture_filter += "host " + ip
+
     if protocol:
-        if ip:
-            capture_filter += " and " + protocol
+        if len(capture_filter) > 0: capture_filter += " and "
+        if protocol.lower() in protocol_mapping:
+            return capture_filter + protocol_mapping[protocol.lower()]
         else:
-            capture_filter += protocol
-        if port:
-            capture_filter += " port " + port
+            capture_filter += protocol.lower()
+
+    if port:
+        capture_filter += " port " + port
 
     return capture_filter
 
@@ -45,9 +56,9 @@ def send_capture(source, destination, timestamp, packets):
         "packets": packets,
     }
     rsp = requests.post(
-        "http://" + destination + "/capture/store", json=capture_payload
+        "http://" + destination + "/worker/capture", json=capture_payload
     )
-    if rsp.status_code != 200:
+    if rsp.status_code != 204:
         print(
             f"{str(datetime.now())[:-3]}: Error calling /capture/store response: {rsp.status_code}, {rsp.content}"
         )

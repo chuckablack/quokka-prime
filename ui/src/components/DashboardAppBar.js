@@ -29,6 +29,10 @@ function renderServices(dashboard) {
     dashboard.setState({show: "services"})
 }
 
+function renderCapture(dashboard) {
+    dashboard.setState({show: "capture"})
+}
+
 export default function DashboardAppBar(props) {
     const classes = useStyles();
     const dashboard = props.dashboard;
@@ -43,6 +47,7 @@ export default function DashboardAppBar(props) {
                     <Button color="inherit" onClick={() => renderDevices(dashboard)}>Devices</Button>
                     <Button color="inherit" onClick={() => renderHosts(dashboard)}>Hosts</Button>
                     <Button color="inherit" onClick={() => renderServices(dashboard)}>Services</Button>
+                    <Button color="inherit" onClick={() => renderCapture(dashboard)}>Capture</Button>
                 </Toolbar>
             </AppBar>
         </div>

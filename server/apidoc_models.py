@@ -99,3 +99,27 @@ class ApiModels:
                 "traceroute_img": fields.String(example="iVBORw0KGgoAAAANSUhEU..."),
             }
         )
+        ApiModels.packet = api.model(
+            "Packet",
+            {
+                "timestamp": fields.String(example="2021-05-05 14:48:58.199"),
+                "local_timestamp": fields.String(example="2021-05-05 14:48:58.19552"),
+                "source": fields.String(example="quokka"),
+                "ether_dst": fields.String(example="a4:34:d9:87:59:bf"),
+                "ether_src": fields.String(example="f8:2d:c0:58:f7:50"),
+                "ip_dst": fields.String(example="192.168.254.14"),
+                "ip_src": fields.String(example="162.159.134.234"),
+                "protocol": fields.String(example="HTTPS"),
+                "dport": fields.String(example="53570"),
+                "sport": fields.String(example="443"),
+                "packet_hexdump": fields.String(example="0000  A4 34 D9 87 "),
+                "packet_json": fields.String(example="{'Ethernet': {'dst': 'a4:34:d9:87:59:bf'... "),
+            }
+        )
+        ApiModels.capture_data = api.model(
+            "Capture Data",
+            {
+                "packets": fields.List(fields.Nested(ApiModels.packet)),
+            }
+        )
+

@@ -4,6 +4,7 @@ import DashboardAppBar from "./DashboardAppBar";
 import Devices from "./Devices";
 import Hosts from "./Hosts";
 import Services from "./Services";
+import Capture from "./Capture";
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline'
 
@@ -28,6 +29,8 @@ class Dashboard extends Component {
             info = <Hosts dashboard={this}/>;
         } else if (show === "services") {
             info = <Services dashboard={this}/>;
+        } else if (show === "capture") {
+            info = <Capture dashboard={this}/>;
         }
 
         return (

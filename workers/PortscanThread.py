@@ -53,4 +53,4 @@ class PortscanThread(Thread):
         pprint(scan_output)
         self.process_scan(scan_output)
 
-        print(f"\n\n-----> PortscanThread: competed portscan")
+        print(f"\n\n-----> PortscanThread: completed portscan")
