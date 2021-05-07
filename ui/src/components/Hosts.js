@@ -17,6 +17,7 @@ class Hosts extends Component {
         super(props);
         this.state = {
             hosts: [],
+            dashboard: props.dashboard,
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
             openExtendedPortScanDialog: false,
             portScanHost: '',
@@ -96,6 +97,10 @@ class Hosts extends Component {
         parent.setState({openExtendedPortScanDialog: false})
     }
 
+    renderCapture(ip) {
+        this.state.dashboard.setState({ip: ip, protocol: null, port: null, show: "capture"})
+    }
+
     render() {
 
         const {hosts} = this.state;
@@ -169,7 +174,14 @@ class Hosts extends Component {
                                 this.renderExtendedPortScanDialog(rowData.hostname)
                             }
                         },
-                     ]}
+                        {
+                            icon: 'pageview',
+                            tooltip: 'Capture packets for host',
+                            onClick: (event, rowData) => {
+                                this.renderCapture(rowData.ip_address)
+                            }
+                        },
+                    ]}
 
                 />
                 <Dialog

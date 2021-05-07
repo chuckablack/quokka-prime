@@ -171,29 +171,12 @@ def get_capture(ip, protocol, port, num_packets):
 
     print(f"---> getting capture: {ip}, {protocol}, {port}, type: {type(port)}")
 
-    # We must generate and implement specific queries based on what has been requested
-    # Note that if we add more fields, we'll have to modify this simple method to handle all cases
-    if ip and not protocol:  # Note that if not protocol, port isn't relevant
-        search = {"$or": [{"ip_src": ip}, {"ip_dst": ip}]}
-    elif ip and protocol and not port:
-        search = {"$or": [{"ip_src": ip}, {"ip_dst": ip}], "protocol": protocol.upper()}
-    elif ip and protocol and port:
-        search = {
-            "$and": [
-                {"$or": [{"ip_src": ip}, {"ip_dst": ip}]},
-                {"protocol": protocol.upper()},
-                {"$or": [{"sport": port}, {"dport": port}]},
-            ]
-        }
-    elif not ip and protocol and not port:
-        search = {"protocol": protocol.upper()}
-    elif not ip and protocol and port:
-        search = {"protocol": protocol.upper(), "$or": [{"sport": port}, {"dport": port}]}
-    elif not ip and not protocol and port:
-        search = {"$or": [{"sport": port}, {"dport": port}]}
-    else:  # Not sure what was requested, so just get everything
-        search = {}
+    search_items = list()
+    if ip: search_items.append({"$or": [{"ip_src": ip}, {"ip_dst": ip}]})
+    if protocol: search_items.append({"protocol": protocol.upper()})
+    if port: search_items.append({"$or": [{"sport": port}, {"dport": port}]})
 
+    search = {"$and": search_items} if search_items else {}
     packets_with_internals = db.captures.find(search).sort("timestamp", -1).limit(num_packets)
 
     packets = list()

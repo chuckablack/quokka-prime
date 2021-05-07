@@ -18,7 +18,7 @@ class Dashboard extends Component {
     }
 
     render() {
-        const {show} = this.state
+        const {show, ip, protocol, port} = this.state
         const darkTheme = createMuiTheme({palette: {type: 'dark',},});
 
         let info;
@@ -30,7 +30,7 @@ class Dashboard extends Component {
         } else if (show === "services") {
             info = <Services dashboard={this}/>;
         } else if (show === "capture") {
-            info = <Capture dashboard={this}/>;
+            info = <Capture dashboard={this} ip={ip} protocol={protocol} port={port} />;
         }
 
         return (
