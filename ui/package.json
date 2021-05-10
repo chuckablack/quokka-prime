@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "dgram": "^1.0.1",
+    "dns": "^0.2.2",
     "material-table": "^1.56.1",
     "react": "^16.13.1",
     "react-charts": "^2.0.2-next.6",

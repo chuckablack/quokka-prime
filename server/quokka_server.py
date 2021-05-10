@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 from flask_restx import Api, Resource
-from quokka_server_utils import fix_target
+from quokka_server_utils import get_hostname_from_target, get_ip_address_from_target
 
 from apidoc_models import ApiModels
 
@@ -143,12 +143,12 @@ class TracerouteEndpoint(Resource):
         target = request.args.get("target")
         if not target:
             return "Must provide service target to get traceroute", 400
-        target = fix_target(target)
+        hostname = get_hostname_from_target(target)
 
         token = request.args.get("token")
         if not token:
             return "Must provide token to get traceroute", 400
-        return get_traceroute(target, token)
+        return get_traceroute(hostname, token)
 
     @staticmethod
     @api.doc(params={"target": "IP address or hostname of target service, host, or device to find traceroute for"})
@@ -158,9 +158,9 @@ class TracerouteEndpoint(Resource):
         target = request.args.get("target")
         if not target:
             return "Must provide  target to get traceroute", 400
-        target = fix_target(target)
+        hostname = get_hostname_from_target(target)
 
-        token = start_traceroute(target)
+        token = start_traceroute(hostname)
         return {"token": token}
 
 
@@ -193,6 +193,8 @@ class CaptureEndpoint(Resource):
         port = request.args.get("port")
         num_packets = request.args.get("num_packets")
 
+        if ip: ip = get_ip_address_from_target(ip)
+
         if not num_packets or not num_packets.isnumeric(): num_packets = 10
         if port and port.isnumeric(): port = int(port)
         else: port = None
@@ -211,6 +213,8 @@ class CaptureEndpoint(Resource):
         protocol = request.args.get("protocol")
         port = request.args.get("port")
         capture_time = request.args.get("capture_time")
+
+        if ip: ip = get_ip_address_from_target(ip)
 
         if not capture_time: capture_time = 180
         else:  capture_time = int(capture_time)

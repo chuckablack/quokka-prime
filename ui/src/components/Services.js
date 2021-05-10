@@ -17,12 +17,13 @@ class Services extends Component {
         super(props);
         this.state = {
             services: [],
+            dashboard: props.dashboard,
             countdownValue: process.env.REACT_APP_REFRESH_RATE,
             openTraceRouteDialog: false,
             target: '',
             traceRouteResults: {traceroute_img: ''},
             token: '',
-   };
+        };
     }
 
     countdown() {
@@ -84,6 +85,10 @@ class Services extends Component {
 
     componentWillUnmount() {
         clearInterval(this.interval)
+    }
+
+    renderCapture(target, type) {
+        this.state.dashboard.setState({ip: target, protocol: type, port: null, show: "capture"})
     }
 
     renderTraceRouteDialog(target) {
@@ -164,6 +169,13 @@ class Services extends Component {
                         cellStyle: { fontSize: 14, }
                     }}
                     actions={[
+                        {
+                            icon: 'pageview',
+                            tooltip: 'Capture packets for host',
+                            onClick: (event, rowData) => {
+                                this.renderCapture(rowData.target, rowData.type)
+                            }
+                        },
                         {
                             icon: AccountTreeRoundedIcon,
                             tooltip: 'Trace-route to service',
