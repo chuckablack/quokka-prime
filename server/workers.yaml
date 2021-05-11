@@ -1,0 +1,5 @@
+192.168.254.0/24:
+  worker-name: home-subnet
+
+0.0.0.0/0:
+  worker-name: quokka-worker

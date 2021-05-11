@@ -171,7 +171,7 @@ class Hosts extends Component {
                             icon: PolicyRoundedIcon,
                             tooltip: 'Extended Scan for open ports',
                             onClick: (event, rowData) => {
-                                this.renderExtendedPortScanDialog(rowData.hostname)
+                                this.renderExtendedPortScanDialog(rowData.ip_address)
                             }
                         },
                         {

@@ -2,6 +2,7 @@
 
 import json
 import os
+import argparse
 
 import pika
 
@@ -18,9 +19,10 @@ def start_receiving():
 
     print(f"Worker: starting rabbitmq, listening for work requests")
 
-    connection = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
+    credentials = pika.PlainCredentials("quokkaUser", "quokkaPass")
+    connection = pika.BlockingConnection(pika.ConnectionParameters(broker, credentials=credentials))
     channel = connection.channel()
-    worker_queue = "quokka-worker"
+    worker_queue = worker_name
     channel.queue_declare(queue=worker_queue, durable=True)
     print(f"\n\n [*] Worker: waiting for messages on queue: {worker_queue}.")
 
@@ -60,9 +62,11 @@ def receive_work_request(capture_channel, method, _, body):
 def process_work_request(work_type, work_info):
 
     if "quokka" not in work_info:
-        quokka = "localhost:5001"
+        print(f"!!! 'quokka' not present in work_info, cannot continue")
+        return
     else:
         quokka = work_info["quokka"]
+        print(f"---> work request received, will send results to {quokka}")
 
     if work_type == CAPTURE:
         work_thread = CaptureThread(quokka, work_info)
@@ -81,5 +85,35 @@ if __name__ == "__main__":
 
     if os.geteuid() != 0:
         exit("You must have root privileges to run this script, try using 'sudo'.")
+
+    parser = argparse.ArgumentParser(description="Remote worker for quokka")
+    parser.add_argument(
+        "-N",
+        "--name",
+        default="quokka-worker",
+        help="Name of this worker; must match what is configured on quokka server",
+    )
+    parser.add_argument(
+        "-B",
+        "--broker",
+        default="localhost",
+        help="Hostname or IP address of the message broker for receiving work requests",
+    )
+    parser.add_argument(
+        "-S", "--serialno", default="111-111-111", help="A preferably unique id of worker"
+    )
+    parser.add_argument(
+        "-H",
+        "--heartbeat",
+        default="30",
+        help="Frequency of heartbeats sent to quokka server, in seconds",
+    )
+
+    args = parser.parse_args()
+
+    worker_name = args.name
+    broker = args.broker
+    serial_no = args.serialno
+    heartbeat = args.heartbeat
 
     start_receiving()
