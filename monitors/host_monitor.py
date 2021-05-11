@@ -11,16 +11,21 @@ from concurrent.futures import ThreadPoolExecutor
 MONITOR_INTERVAL = 60
 DISCOVERY_INTERVAL = 300
 
-parser = argparse.ArgumentParser(description="Threadpool example")
-parser.add_argument('-poolsize',  default=10, help='Size of the threadpool')
+parser = argparse.ArgumentParser(description="Host Monitor")
+parser.add_argument('--poolsize', default=10, help='Size of the threadpool')
+parser.add_argument('--quokka', default="localhost:5001", help='Hostname/IP and port of the quokka server')
+
 args = parser.parse_args()
 threadpool_size = int(args.poolsize)
+quokka = args.quokka
 
 
 def get_hosts():
 
+    global quokka
+
     print("\n\n----> Retrieving hosts ...", end="")
-    response = requests.get("http://127.0.0.1:5001/hosts")
+    response = requests.get("http://"+quokka+"/hosts")
     if response.status_code != 200:
         print(f" !!!  Failed to retrieve hosts from server: {response.reason}")
         return {}
@@ -62,8 +67,10 @@ def discovery():
 
 def update_host(host):
 
+    global quokka
+
     print(f"----> Updating host status via REST API: {host['hostname']}", end="")
-    rsp = requests.put("http://127.0.0.1:5001/hosts", params={"hostname": host["hostname"]}, json=host)
+    rsp = requests.put("http://"+quokka+"/hosts", params={"hostname": host["hostname"]}, json=host)
     if rsp.status_code != 204:
         print(
             f"{str(datetime.now())[:-3]}: Error posting to /hosts, response: {rsp.status_code}, {rsp.content}"
