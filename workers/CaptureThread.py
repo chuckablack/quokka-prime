@@ -71,6 +71,7 @@ class CaptureThread(Thread):
         )
         sniff(
             iface=self.interface,
+            #iface="wlan1",
             filter=self.capture_filter,
             timeout=self.capture_time,
             prn=self.process_packet,
