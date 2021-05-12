@@ -23,7 +23,12 @@ def get_services():
     global quokka
 
     print("\n\n----> Retrieving services ...", end="")
-    response = requests.get("http://"+quokka+"/services")
+    try:
+        response = requests.get("http://"+quokka+"/services")
+    except requests.exceptions.ConnectionError as e:
+        print(f" !!!  Exception trying to get services via REST API: {e}")
+        return []
+
     if response.status_code != 200:
         print(f" !!!  Failed to retrieve services from server: {response.reason}")
         return {}
@@ -63,7 +68,12 @@ def update_service(service):
     global quokka
 
     print(f"----> Updating service status via REST API: {service['name']}", end="")
-    rsp = requests.put("http://"+quokka+"/services", params={"name": service["name"]}, json=service)
+    try:
+        rsp = requests.put("http://"+quokka+"/services", params={"name": service["name"]}, json=service)
+    except requests.exceptions.ConnectionError as e:
+        print(f" !!!  Exception trying to update service status via REST API: {service['name']}: {e}")
+        return
+    
     if rsp.status_code != 204:
         print(
             f"{str(datetime.now())[:-3]}: Error posting to /services, response: {rsp.status_code}, {rsp.content}"
