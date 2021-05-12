@@ -2,4 +2,4 @@
   worker-name: home-subnet
 
 0.0.0.0/0:
-  worker-name: quokka-worker
+  worker-name: home-subnet

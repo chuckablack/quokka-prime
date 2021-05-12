@@ -10,8 +10,16 @@ import time
 import re
 from concurrent.futures import ThreadPoolExecutor
 
-MONITOR_INTERVAL = 15
+MONITOR_INTERVAL = 60
 DISCOVERY_INTERVAL = 300
+
+parser = argparse.ArgumentParser(description="Host Monitor")
+parser.add_argument('--poolsize', default=10, help='Size of the threadpool')
+parser.add_argument('--quokka', default="localhost:5001", help='Hostname/IP and port of the quokka server')
+
+args = parser.parse_args()
+threadpool_size = int(args.poolsize)
+quokka = args.quokka
 
 
 def get_version(device, facts):
@@ -30,8 +38,10 @@ def get_version(device, facts):
 
 def get_devices():
 
+    global quokka
+
     print("\n\n----> Retrieving devices ...", end="")
-    response = requests.get("http://127.0.0.1:5001/devices")
+    response = requests.get("http://"+quokka+"/devices")
     if response.status_code != 200:
         print(f" !!!  Failed to retrieve devices from server: {response.reason}")
         return {}
@@ -76,8 +86,10 @@ def discovery():
 
 def update_device(device):
 
+    global quokka
+
     print(f"----> Updating device status via REST API: {device['name']}", end="")
-    rsp = requests.put("http://127.0.0.1:5001/devices", params={"name": device["name"]}, json=device)
+    rsp = requests.put("http://"+quokka+"/devices", params={"name": device["name"]}, json=device)
     if rsp.status_code != 204:
         print(
             f"{str(datetime.now())[:-3]}: Error posting to /devices, response: {rsp.status_code}, {rsp.content}"
@@ -126,13 +138,9 @@ def get_device_facts(device):
 
 def main():
 
-    parser = argparse.ArgumentParser(description="Threadpool example")
-    parser.add_argument('-poolsize', default=10, help='Size of the threadpool')
-    args = parser.parse_args()
-    threadpool_size = int(args.poolsize)
+    global threadpool_size
 
     last_discovery = datetime.now()-timedelta(days=1)
-
     while True:
 
         if (datetime.now() - last_discovery).total_seconds() > DISCOVERY_INTERVAL:

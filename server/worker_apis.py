@@ -5,6 +5,8 @@ import socket
 import yaml
 from ipaddress import IPv4Address, IPv4Network
 
+DEFAULT_KEY = "0.0.0.0/0"
+
 
 def get_my_ip_address():
 
@@ -90,5 +92,9 @@ def find_worker_name(key):
         search_worker_key = key
         print(f"subnet address not found, using key: {key}")
 
-    if search_worker_key not in workers: return "quokka-worker"
-    else: return workers[search_worker_key]["worker-name"]
+    if search_worker_key in workers:
+        return workers[search_worker_key]["worker-name"]
+    elif DEFAULT_KEY in workers:
+        return workers[DEFAULT_KEY]["worker-name"]
+    else:
+        return "quokka-worker"
