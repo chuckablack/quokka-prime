@@ -34,7 +34,7 @@ def get_hosts():
 def update_host(host):
 
     global quokka
-    
+
     print(f"----> Updating host status via REST API: {host['hostname']}", end="")
     rsp = requests.put("http://"+quokka+"/hosts", params={"hostname": host["hostname"]}, json=host)
     if rsp.status_code != 204:
