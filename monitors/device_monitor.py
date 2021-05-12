@@ -98,6 +98,7 @@ def update_device(device):
         rsp = requests.put("http://"+quokka+"/devices", params={"name": device["name"]}, json=device)
     except requests.exceptions.ConnectionError as e:
         print(f" !!!  Exception trying to update device status via REST API: {device['name']}: {e}")
+        return
 
     if rsp.status_code != 204:
         print(
