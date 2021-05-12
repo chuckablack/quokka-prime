@@ -78,8 +78,6 @@ def send_worker_request(broker, message, key):
 
 def find_worker_name(key):
 
-    if not key: return "quokka-worker"
-
     with open("../server/workers.yaml", "r") as yaml_in:
         yaml_workers = yaml_in.read()
         workers = yaml.safe_load(yaml_workers)
@@ -95,6 +93,7 @@ def find_worker_name(key):
     if search_worker_key in workers:
         return workers[search_worker_key]["worker-name"]
     elif DEFAULT_KEY in workers:
+        print(f"looking for default key {DEFAULT_KEY} in workers {workers}")
         return workers[DEFAULT_KEY]["worker-name"]
     else:
         return "quokka-worker"
