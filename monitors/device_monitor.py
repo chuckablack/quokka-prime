@@ -41,7 +41,12 @@ def get_devices():
     global quokka
 
     print("\n\n----> Retrieving devices ...", end="")
-    response = requests.get("http://"+quokka+"/devices")
+    try:
+        response = requests.get("http://"+quokka+"/devices")
+    except requests.exceptions.ConnectionError as e:
+        print(f" !!!  Exception trying to get devices via REST API: {e}")
+        return {}
+
     if response.status_code != 200:
         print(f" !!!  Failed to retrieve devices from server: {response.reason}")
         return {}
@@ -89,7 +94,11 @@ def update_device(device):
     global quokka
 
     print(f"----> Updating device status via REST API: {device['name']}", end="")
-    rsp = requests.put("http://"+quokka+"/devices", params={"name": device["name"]}, json=device)
+    try:
+        rsp = requests.put("http://"+quokka+"/devices", params={"name": device["name"]}, json=device)
+    except requests.exceptions.ConnectionError as e:
+        print(f" !!!  Exception trying to update device status via REST API: {device['name']}: {e}")
+
     if rsp.status_code != 204:
         print(
             f"{str(datetime.now())[:-3]}: Error posting to /devices, response: {rsp.status_code}, {rsp.content}"
