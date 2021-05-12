@@ -27,7 +27,7 @@ def get_services():
         response = requests.get("http://"+quokka+"/services")
     except requests.exceptions.ConnectionError as e:
         print(f" !!!  Exception trying to get services via REST API: {e}")
-        return []
+        return {}
 
     if response.status_code != 200:
         print(f" !!!  Failed to retrieve services from server: {response.reason}")
