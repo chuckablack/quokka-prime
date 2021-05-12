@@ -69,6 +69,8 @@ def portscan_hosts(host):
 
 def main():
 
+    global threadpool_size
+
     while True:
 
         hosts = get_hosts()

@@ -10,7 +10,7 @@ import time
 import re
 from concurrent.futures import ThreadPoolExecutor
 
-MONITOR_INTERVAL = 15
+MONITOR_INTERVAL = 60
 DISCOVERY_INTERVAL = 300
 
 parser = argparse.ArgumentParser(description="Host Monitor")
@@ -139,9 +139,8 @@ def get_device_facts(device):
 def main():
 
     global threadpool_size
-    
-    last_discovery = datetime.now()-timedelta(days=1)
 
+    last_discovery = datetime.now()-timedelta(days=1)
     while True:
 
         if (datetime.now() - last_discovery).total_seconds() > DISCOVERY_INTERVAL:

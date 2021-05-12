@@ -9,11 +9,21 @@ from concurrent.futures import ThreadPoolExecutor
 MONITOR_INTERVAL = 60
 DISCOVERY_INTERVAL = 300
 
+parser = argparse.ArgumentParser(description="Host Monitor")
+parser.add_argument('--poolsize', default=10, help='Size of the threadpool')
+parser.add_argument('--quokka', default="localhost:5001", help='Hostname/IP and port of the quokka server')
+
+args = parser.parse_args()
+threadpool_size = int(args.poolsize)
+quokka = args.quokka
+
 
 def get_services():
 
+    global quokka
+
     print("\n\n----> Retrieving services ...", end="")
-    response = requests.get("http://127.0.0.1:5001/services")
+    response = requests.get("http://"+quokka+"/services")
     if response.status_code != 200:
         print(f" !!!  Failed to retrieve services from server: {response.reason}")
         return {}
@@ -50,8 +60,10 @@ def discovery():
 
 def update_service(service):
 
+    global quokka
+
     print(f"----> Updating service status via REST API: {service['name']}", end="")
-    rsp = requests.put("http://127.0.0.1:5001/services", params={"name": service["name"]}, json=service)
+    rsp = requests.put("http://"+quokka+"/services", params={"name": service["name"]}, json=service)
     if rsp.status_code != 204:
         print(
             f"{str(datetime.now())[:-3]}: Error posting to /services, response: {rsp.status_code}, {rsp.content}"
@@ -92,10 +104,7 @@ def get_service_status(service):
 
 def main():
 
-    parser = argparse.ArgumentParser(description="Threadpool example")
-    parser.add_argument('-poolsize', default=10, help='Size of the threadpool')
-    args = parser.parse_args()
-    threadpool_size = int(args.poolsize)
+    global threadpool_size
 
     last_discovery = datetime.now()-timedelta(days=1)
 

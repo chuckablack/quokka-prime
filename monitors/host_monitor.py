@@ -110,8 +110,9 @@ def ping_host(host):
 
 def main():
 
-    last_discovery = datetime.now()-timedelta(days=1)
+    global threadpool_size
 
+    last_discovery = datetime.now()-timedelta(days=1)
     while True:
 
         if (datetime.now() - last_discovery).total_seconds() > DISCOVERY_INTERVAL:
