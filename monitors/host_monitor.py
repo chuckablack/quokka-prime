@@ -25,7 +25,12 @@ def get_hosts():
     global quokka
 
     print("\n\n----> Retrieving hosts ...", end="")
-    response = requests.get("http://"+quokka+"/hosts")
+    try:
+        response = requests.get("http://"+quokka+"/hosts")
+    except requests.exceptions.ConnectionError as e:
+        print(f" !!!  Exception trying to get hosts via REST API: {e}")
+        return {}
+
     if response.status_code != 200:
         print(f" !!!  Failed to retrieve hosts from server: {response.reason}")
         return {}
@@ -70,7 +75,12 @@ def update_host(host):
     global quokka
 
     print(f"----> Updating host status via REST API: {host['hostname']}", end="")
-    rsp = requests.put("http://"+quokka+"/hosts", params={"hostname": host["hostname"]}, json=host)
+    try:
+        rsp = requests.put("http://"+quokka+"/hosts", params={"hostname": host["hostname"]}, json=host)
+    except requests.exceptions.ConnectionError as e:
+        print(f" !!!  Exception trying to update host {host['hostname']} via REST API: {e}")
+        return
+
     if rsp.status_code != 204:
         print(
             f"{str(datetime.now())[:-3]}: Error posting to /hosts, response: {rsp.status_code}, {rsp.content}"
