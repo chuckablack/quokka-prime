@@ -312,9 +312,10 @@ class ServiceStatusEndpoint(Resource):
         if not service:
             return f"Unknown service: {name}", 400
 
-        host_status = {"service": service,
-                       "status": get_service_status(name, int(datapoints))}
-        return host_status, 200
+        service_status = {"service": service,
+                          "status": get_service_status(name, int(datapoints)),
+                          "summary": []}
+        return service_status, 200
 
 
 @api.route("/device/status")
@@ -342,6 +343,7 @@ class DeviceStatusEndpoint(Resource):
         if not device:
             return f"Unknown device: {name}", 400
 
-        host_status = {"device": device,
-                       "status": get_device_status(name, int(datapoints))}
-        return host_status, 200
+        device_status = {"device": device,
+                         "status": get_device_status(name, int(datapoints)),
+                         "summary": []}
+        return device_status, 200

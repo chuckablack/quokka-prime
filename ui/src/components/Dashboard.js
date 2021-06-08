@@ -4,6 +4,7 @@ import DashboardAppBar from "./DashboardAppBar";
 import Devices from "./Devices";
 import Hosts from "./Hosts";
 import Services from "./Services";
+import HostStatus from "./HostStatus"
 import Capture from "./Capture";
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -18,7 +19,7 @@ class Dashboard extends Component {
     }
 
     render() {
-        const {show, ip, protocol, port} = this.state
+        const {show, ip, protocol, port, name} = this.state
         const darkTheme = createMuiTheme({palette: {type: 'dark',},});
 
         let info;
@@ -31,6 +32,8 @@ class Dashboard extends Component {
             info = <Services dashboard={this}/>;
         } else if (show === "capture") {
             info = <Capture dashboard={this} ip={ip} protocol={protocol} port={port} />;
+        } else if (show === "hoststatus") {
+            info = <HostStatus dashboard={this} hostname={name} />;
         }
 
         return (

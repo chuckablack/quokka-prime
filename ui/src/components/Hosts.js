@@ -88,6 +88,10 @@ class Hosts extends Component {
         clearInterval(this.interval)
     }
 
+    renderHostStatus(hostname) {
+        this.state.dashboard.setState({name: hostname, show: "hoststatus"})
+    }
+
     renderExtendedPortScanDialog(hostname) {
         this.initiateExtendedPortScan(hostname)
         this.setState({openExtendedPortScanDialog: true, portScanHost: hostname})
@@ -167,6 +171,13 @@ class Hosts extends Component {
                         cellStyle: { fontSize: 14, }
                     }}
                     actions={[
+                        {
+                            icon: 'poll',
+                            tooltip: 'Display Time-Series for Host',
+                            onClick: (event, rowData) => {
+                                this.renderHostStatus(rowData.hostname)
+                            }
+                        },
                         {
                             icon: PolicyRoundedIcon,
                             tooltip: 'Extended Scan for open ports',
