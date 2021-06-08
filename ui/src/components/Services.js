@@ -147,7 +147,7 @@ class Services extends Component {
                         { title: 'Type', field: 'type' },
                         { title: 'Target', field: 'target' },
                         { title: 'Data', field: 'data' },
-                        { title: 'Rsp Time', render: rowData =>  rowData.response_time.toFixed(3) },
+                        { title: 'Rsp Time', field: 'response_time', type: 'numeric' },
                         { title: 'Last Heard', field: 'last_heard' },
                     ]}
                     data={ Object.values(services) }

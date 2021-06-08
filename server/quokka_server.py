@@ -5,6 +5,9 @@ from quokka_server_utils import get_hostname_from_target, get_ip_address_from_ta
 
 from apidoc_models import ApiModels
 
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 quokka_app = Flask(__name__)
 CORS(quokka_app)
 
@@ -12,17 +15,21 @@ api = Api(quokka_app, version="1.0", title="Quokka", description="Quokka for 52-
           default="quokka", default_label="")
 ApiModels.set_api_models(api)
 
-from db_apis import get_all_hosts, set_host
-from db_apis import get_all_devices, set_device
-from db_apis import get_all_services, set_service
+from db_apis import get_all_hosts, set_host, get_host, get_host_status
+from db_apis import get_all_devices, set_device, get_device, get_device_status
+from db_apis import get_all_services, set_service, get_service, get_service_status
 from db_apis import get_capture, get_portscan, get_traceroute
 
 from db_apis import record_portscan_data, record_traceroute_data, record_capture_data
 from worker_apis import start_portscan, start_traceroute, start_capture
 
+limiter = Limiter(quokka_app, key_func=get_remote_address)
+
 
 @api.route("/hosts")
 class HostsEndpoint(Resource):
+
+    decorators = [limiter.limit("60/minute")]
 
     @staticmethod
     @api.response(200, 'Success', ApiModels.hosts_response)
@@ -46,6 +53,8 @@ class HostsEndpoint(Resource):
 @api.route("/devices")
 class DevicesEndpoint(Resource):
 
+    decorators = [limiter.limit("60/minute")]
+
     @staticmethod
     @api.response(200, 'Success', ApiModels.devices_response)
     def get():
@@ -68,6 +77,8 @@ class DevicesEndpoint(Resource):
 @api.route("/services")
 class ServicesEndpoint(Resource):
 
+    decorators = [limiter.limit("60/minute")]
+
     @staticmethod
     @api.response(200, 'Success', [ApiModels.services_response])
     def get():
@@ -89,6 +100,8 @@ class ServicesEndpoint(Resource):
 
 @api.route("/scan")
 class ScanEndpoint(Resource):
+
+    decorators = [limiter.limit("60/minute")]
 
     @staticmethod
     @api.doc(params={"token": "The token returned from the corresponding POST that initiated the portscan",
@@ -120,6 +133,8 @@ class ScanEndpoint(Resource):
 @api.route("/worker/portscan")
 class WorkerScanEndpoint(Resource):
 
+    decorators = [limiter.limit("60/minute")]
+
     @staticmethod
     @api.doc(body=ApiModels.portscan_data)
     @api.response(204, 'Success')
@@ -132,6 +147,8 @@ class WorkerScanEndpoint(Resource):
 
 @api.route("/traceroute")
 class TracerouteEndpoint(Resource):
+
+    decorators = [limiter.limit("60/minute")]
 
     @staticmethod
     @api.doc(params={"token": "The token returned from the corresponding POST that initiated the traceroute",
@@ -167,6 +184,8 @@ class TracerouteEndpoint(Resource):
 @api.route("/worker/traceroute")
 class WorkerTracerouteEndpoint(Resource):
 
+    decorators = [limiter.limit("60/minute")]
+
     @staticmethod
     @api.doc(body=ApiModels.traceroute_data)
     @api.response(204, 'Success')
@@ -179,6 +198,8 @@ class WorkerTracerouteEndpoint(Resource):
 
 @api.route("/capture")
 class CaptureEndpoint(Resource):
+
+    decorators = [limiter.limit("60/minute")]
 
     @staticmethod
     @api.doc(params={"ip": "The ip address for which to capture packets",
@@ -234,3 +255,93 @@ class WorkerCaptureEndpoint(Resource):
         record_capture_data(capture_data)
 
         return {}, 204
+
+
+@api.route("/host/status")
+class HostStatusEndpoint(Resource):
+
+    decorators = [limiter.limit("60/minute")]
+
+    @staticmethod
+    @api.doc(params={"hostname": "Hostname of host to get status for",
+                     "datapoints": "Number of datapoints to be returned"})
+    @api.response(200, 'Success')
+    @api.response(400, 'Must provide hostname to get host status')
+    def get():
+        hostname = request.args.get("hostname")
+        datapoints = request.args.get("datapoints")
+
+        if not hostname:
+            return "Must provide hostname to get host status", 400
+        if not datapoints:
+            datapoints = "24"
+        if not datapoints.isnumeric():
+            return "Datapoints must be an integer", 400
+
+        host = get_host(hostname)
+        if not host:
+            return f"Unknown host: {hostname}", 400
+
+        host_status = {"host": host,
+                       "status": get_host_status(hostname, int(datapoints))}
+        return host_status, 200
+
+
+@api.route("/service/status")
+class ServiceStatusEndpoint(Resource):
+
+    decorators = [limiter.limit("60/minute")]
+
+    @staticmethod
+    @api.doc(params={"name": "Name of service to get status for",
+                     "datapoints": "Number of datapoints to be returned"})
+    @api.response(200, 'Success')
+    @api.response(400, 'Must provide name to get service status')
+    def get():
+        name = request.args.get("name")
+        datapoints = request.args.get("datapoints")
+
+        if not name:
+            return "Must provide name to get service status", 400
+        if not datapoints:
+            datapoints = "24"
+        if not datapoints.isnumeric():
+            return "Datapoints must be an integer", 400
+
+        service = get_service(name)
+        if not service:
+            return f"Unknown service: {name}", 400
+
+        host_status = {"service": service,
+                       "status": get_service_status(name, int(datapoints))}
+        return host_status, 200
+
+
+@api.route("/device/status")
+class DeviceStatusEndpoint(Resource):
+
+    decorators = [limiter.limit("60/minute")]
+
+    @staticmethod
+    @api.doc(params={"name": "Name of device to get status for",
+                     "datapoints": "Number of datapoints to be returned"})
+    @api.response(200, 'Success')
+    @api.response(400, 'Must provide name to get device status')
+    def get():
+        name = request.args.get("name")
+        datapoints = request.args.get("datapoints")
+
+        if not name:
+            return "Must provide name to get device status", 400
+        if not datapoints:
+            datapoints = "24"
+        if not datapoints.isnumeric():
+            return "Datapoints must be an integer", 400
+
+        device = get_device(name)
+        if not device:
+            return f"Unknown device: {name}", 400
+
+        host_status = {"device": device,
+                       "status": get_device_status(name, int(datapoints))}
+        return host_status, 200

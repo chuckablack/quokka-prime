@@ -57,7 +57,7 @@ def discovery():
         if "data" not in service:
             service["data"] = ""
         service["availability"] = False
-        service["response_time"] = 0.0
+        service["response_time"] = "0.0"
         service["last_heard"] = ""
 
         update_service(service)
@@ -102,7 +102,7 @@ def get_service_status(service):
 
         service["availability"] = availability
         if service["availability"]:
-            service["response_time"] = response_time
+            service["response_time"] = f"{response_time:.4f}"
             service["last_heard"] = str(datetime.now())[:-3]
 
     except BaseException as e:

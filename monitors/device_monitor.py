@@ -81,7 +81,7 @@ def discovery():
 
         else:
             device["availability"] = False
-            device["response_time"] = 0.0
+            device["response_time"] = "0.0"
             device["model"] = ""
             device["os_version"] = ""
             device["last_heard"] = ""
@@ -136,7 +136,7 @@ def get_device_facts(device):
         device["os_version"] = get_version(device, facts)
         device["model"] = facts["model"]
         device["availability"] = True
-        device["response_time"] = response_time
+        device["response_time"] = f"{response_time:.4f}"
         device["last_heard"] = str(datetime.now())[:-3]
 
     except NapalmException as e:

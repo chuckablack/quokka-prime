@@ -6,7 +6,8 @@ import time
 
 def remove_internals(d):
 
-    return {k: v for (k, v) in d.items() if not k.startswith("_")}
+    if d: return {k: v for (k, v) in d.items() if not k.startswith("_")}
+    else: return None
 
 
 def get_all_hosts():
@@ -21,6 +22,12 @@ def get_host(hostname):
     return remove_internals(host)
 
 
+def get_host_status(hostname, datapoints):
+
+    status_records = db.hosts_status.find({"hostname": hostname}).sort("time", -1).limit(datapoints)
+    return [remove_internals(status_record) for status_record in status_records]
+
+
 def set_host(host):
 
     existing_host = db.hosts.find_one({"hostname": host["hostname"]})
@@ -28,6 +35,14 @@ def set_host(host):
         db.hosts.insert_one(host)
     else:
         db.hosts.update_one({"hostname": host["hostname"]}, {"$set": host})
+
+    host_status = {
+        "time": str(datetime.now())[:-3],
+        "hostname": host["hostname"],
+        "availability": host["availability"],
+        "response_time": host["response_time"]
+    }
+    db.hosts_status.insert_one(host_status)
 
 
 def get_all_services():
@@ -50,11 +65,31 @@ def set_service(service):
     else:
         db.services.update_one({"name": service["name"]}, {"$set": service})
 
+    service_status = {
+        "time": str(datetime.now())[:-3],
+        "name": service["name"],
+        "availability": service["availability"],
+        "response_time": service["response_time"]
+    }
+    db.services_status.insert_one(service_status)
+
+
+def get_service_status(name, datapoints):
+
+    status_records = db.services_status.find({"name": name}).sort("time", -1).limit(datapoints)
+    return [remove_internals(status_record) for status_record in status_records]
+
 
 def get_all_devices():
 
     devices = {device["name"]: remove_internals(device) for device in db.devices.find()}
     return devices
+
+
+def get_device(name):
+
+    device = db.devices.find_one({"name": name})
+    return remove_internals(device)
 
 
 def set_device(device):
@@ -64,6 +99,20 @@ def set_device(device):
         db.devices.insert_one(device)
     else:
         db.devices.update_one({"name": device["name"]}, {"$set": device})
+
+    device_status = {
+        "time": str(datetime.now())[:-3],
+        "name": device["name"],
+        "availability": device["availability"],
+        "response_time": device["response_time"]
+    }
+    db.devices_status.insert_one(device_status)
+
+
+def get_device_status(name, datapoints):
+
+    status_records = db.devices_status.find({"name": name}).sort("time", -1).limit(datapoints)
+    return [remove_internals(status_record) for status_record in status_records]
 
 
 def record_portscan_data(portscan_data):

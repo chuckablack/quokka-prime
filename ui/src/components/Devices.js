@@ -147,7 +147,7 @@ class Devices extends Component {
                         { title: 'IP Address', field: 'ip_address' },
                         { title: 'Model', field: 'model' },
                         { title: 'Version', field: 'os_version' },
-                        { title: 'Rsp Time', render: rowData =>  rowData.response_time.toFixed(3) },
+                        { title: 'Rsp Time', field: 'response_time', type: 'numeric' },
                         { title: 'Last Checked', field: 'last_heard' },
                     ]}
                     data={  Object.values(devices) }
