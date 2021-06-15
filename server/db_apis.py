@@ -272,9 +272,9 @@ def create_summaries(hour):
         STATUS_SUMMARY_TABLE = "status_summary_table"
 
     # Get names as identifiers for all status tables
-    hostnames = [hostname["hostname"] for hostname in db.hosts.find({}, {"hostname": 1})]
-    servicenames = [servicename["name"] for servicename in db.services.find({}, {"name": 1})]
-    devicenames = [devicename["name"] for devicename in db.devices.find({}, {"name": 1})]
+    hostnames = [host["hostname"] for host in db.hosts.find()]
+    servicenames = [service["name"] for service in db.services.find()]
+    devicenames = [device["name"] for device in db.devices.find()]
 
     status_tables = [{StatusTableInfo.NAMES: hostnames,
                       StatusTableInfo.SEARCH_FIELD: "hostname",

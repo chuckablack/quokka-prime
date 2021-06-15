@@ -24,12 +24,12 @@ class DbHourlyTask:
                 time.sleep(15)
                 continue
 
-            # Get datetime for 2 and 24 hours ago
-            now = datetime.now()
-            status_expire_after = now - timedelta(hours=24)
-            diagnostics_expire_after = now - timedelta(hours=2)
+            # trim old data from status and diagnostic tables
+            status_expire_after = datetime.now() - timedelta(hours=24)
+            diagnostics_expire_after = datetime.now() - timedelta(hours=2)
             trim_tables(status_expire_after, diagnostics_expire_after)
 
+            # create hourly summaries from status tables
             create_summaries(self.current_hour)
 
             self.current_hour = this_hour
