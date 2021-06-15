@@ -5,6 +5,8 @@ import Devices from "./Devices";
 import Hosts from "./Hosts";
 import Services from "./Services";
 import HostStatus from "./HostStatus"
+import ServiceStatus from "./ServiceStatus"
+import DeviceStatus from "./DeviceStatus"
 import Capture from "./Capture";
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -34,6 +36,10 @@ class Dashboard extends Component {
             info = <Capture dashboard={this} ip={ip} protocol={protocol} port={port} />;
         } else if (show === "hoststatus") {
             info = <HostStatus dashboard={this} hostname={name} />;
+        } else if (show === "servicestatus") {
+            info = <ServiceStatus dashboard={this} name={name} />;
+        } else if (show === "devicestatus") {
+            info = <DeviceStatus dashboard={this} name={name} />;
         }
 
         return (

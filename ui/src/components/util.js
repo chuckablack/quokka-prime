@@ -11,7 +11,8 @@ export default function getStatusData(measurement, statusData) {
     for (let i = 0; i < statusData.length; i++) {
 
         if (measurement === "RSP_TIME") {
-            yValue = (statusData[i].response_time)/1000;
+            // yValue = (statusData[i].response_time)/1000;
+            yValue = parseFloat(statusData[i].response_time);
         } else if (measurement === "AVAILABILITY") {
             yValue = statusData[i].availability ? 100 : 0;
         } else if (measurement === "AVAILABILITY_SUMMARY") {
@@ -21,7 +22,7 @@ export default function getStatusData(measurement, statusData) {
             yValue = 0;
         }
 
-        const tsDataItem = {x: new Date(statusData[i].timestamp), y: yValue};
+        const tsDataItem = {x: new Date(statusData[i].time), y: yValue};
         tsData.push(tsDataItem);
         if (tsDataItem.y > maxY) {
             maxY = tsDataItem.y;

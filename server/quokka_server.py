@@ -2,8 +2,11 @@ from flask import Flask, request
 from flask_cors import CORS
 from flask_restx import Api, Resource
 from quokka_server_utils import get_hostname_from_target, get_ip_address_from_target
+from DbHourlyTask import DbHourlyTask
 
 from apidoc_models import ApiModels
+import threading
+import atexit
 
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -15,15 +18,30 @@ api = Api(quokka_app, version="1.0", title="Quokka", description="Quokka for 52-
           default="quokka", default_label="")
 ApiModels.set_api_models(api)
 
-from db_apis import get_all_hosts, set_host, get_host, get_host_status
-from db_apis import get_all_devices, set_device, get_device, get_device_status
-from db_apis import get_all_services, set_service, get_service, get_service_status
+from db_apis import get_all_hosts, set_host, get_host, get_host_status, get_host_status_summary
+from db_apis import get_all_devices, set_device, get_device, get_device_status, get_device_status_summary
+from db_apis import get_all_services, set_service, get_service, get_service_status, get_service_status_summary
 from db_apis import get_capture, get_portscan, get_traceroute
 
 from db_apis import record_portscan_data, record_traceroute_data, record_capture_data
 from worker_apis import start_portscan, start_traceroute, start_capture
 
 limiter = Limiter(quokka_app, key_func=get_remote_address)
+
+# Start background DB hourly task
+db_hourly_task = DbHourlyTask()
+db_hourly_task_thread = threading.Thread(target=db_hourly_task.start)
+db_hourly_task_thread.start()
+
+
+# shutdown of our flask process requires terminating background db thread
+def shutdown():
+
+    db_hourly_task.set_terminate()
+    db_hourly_task_thread.join()
+
+
+atexit.register(shutdown)  # causes shutdown() to get called when exiting
 
 
 @api.route("/hosts")
@@ -283,7 +301,8 @@ class HostStatusEndpoint(Resource):
             return f"Unknown host: {hostname}", 400
 
         host_status = {"host": host,
-                       "status": get_host_status(hostname, int(datapoints))}
+                       "status": get_host_status(hostname, int(datapoints)),
+                       "summary": get_host_status_summary(hostname, int(datapoints))}
         return host_status, 200
 
 
@@ -314,7 +333,7 @@ class ServiceStatusEndpoint(Resource):
 
         service_status = {"service": service,
                           "status": get_service_status(name, int(datapoints)),
-                          "summary": []}
+                          "summary": get_service_status_summary(name, int(datapoints))}
         return service_status, 200
 
 
@@ -345,5 +364,5 @@ class DeviceStatusEndpoint(Resource):
 
         device_status = {"device": device,
                          "status": get_device_status(name, int(datapoints)),
-                         "summary": []}
+                         "summary": get_device_status_summary(name, int(datapoints))}
         return device_status, 200

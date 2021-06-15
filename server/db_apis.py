@@ -28,6 +28,12 @@ def get_host_status(hostname, datapoints):
     return [remove_internals(status_record) for status_record in status_records]
 
 
+def get_host_status_summary(hostname, datapoints):
+
+    status_records = db.hosts_status_summary.find({"hostname": hostname}).sort("time", -1).limit(datapoints)
+    return [remove_internals(status_record) for status_record in status_records]
+
+
 def set_host(host):
 
     existing_host = db.hosts.find_one({"hostname": host["hostname"]})
@@ -80,6 +86,12 @@ def get_service_status(name, datapoints):
     return [remove_internals(status_record) for status_record in status_records]
 
 
+def get_service_status_summary(name, datapoints):
+
+    status_records = db.services_status_summary.find({"name": name}).sort("time", -1).limit(datapoints)
+    return [remove_internals(status_record) for status_record in status_records]
+
+
 def get_all_devices():
 
     devices = {device["name"]: remove_internals(device) for device in db.devices.find()}
@@ -90,6 +102,18 @@ def get_device(name):
 
     device = db.devices.find_one({"name": name})
     return remove_internals(device)
+
+
+def get_device_status(name, datapoints):
+
+    status_records = db.devices_status.find({"name": name}).sort("time", -1).limit(datapoints)
+    return [remove_internals(status_record) for status_record in status_records]
+
+
+def get_device_status_summary(name, datapoints):
+
+    status_records = db.devices_status_summary.find({"name": name}).sort("time", -1).limit(datapoints)
+    return [remove_internals(status_record) for status_record in status_records]
 
 
 def set_device(device):
@@ -107,12 +131,6 @@ def set_device(device):
         "response_time": device["response_time"]
     }
     db.devices_status.insert_one(device_status)
-
-
-def get_device_status(name, datapoints):
-
-    status_records = db.devices_status.find({"name": name}).sort("time", -1).limit(datapoints)
-    return [remove_internals(status_record) for status_record in status_records]
 
 
 def record_portscan_data(portscan_data):
@@ -234,3 +252,79 @@ def get_capture(ip, protocol, port, num_packets):
         packets.append(packet)
 
     return packets
+
+
+def trim_tables(status_expire_after, diagnostics_expire_after):
+
+    for status_table in [db.hosts_status, db.services_status, db.devices_status]:
+        status_table.delete_many({"time": {"$lt": str(status_expire_after)}})
+
+    for diagnostics_table in [db.captures, db.traceroutes, db.portscans]:
+        diagnostics_table.delete_many({"time": {"$lt": str(diagnostics_expire_after)}})
+
+
+def create_summaries(hour):
+
+    class StatusTableInfo:
+        SEARCH_FIELD = "search_field"
+        NAMES = "names"
+        STATUS_TABLE = "status_table"
+        STATUS_SUMMARY_TABLE = "status_summary_table"
+
+    # Get names as identifiers for all status tables
+    hostnames = [hostname["hostname"] for hostname in db.hosts.find({}, {"hostname": 1})]
+    servicenames = [servicename["name"] for servicename in db.services.find({}, {"name": 1})]
+    devicenames = [devicename["name"] for devicename in db.devices.find({}, {"name": 1})]
+
+    status_tables = [{StatusTableInfo.NAMES: hostnames,
+                      StatusTableInfo.SEARCH_FIELD: "hostname",
+                      StatusTableInfo.STATUS_TABLE: db.hosts_status,
+                      StatusTableInfo.STATUS_SUMMARY_TABLE: db.hosts_status_summary},
+                     {StatusTableInfo.NAMES: servicenames,
+                      StatusTableInfo.SEARCH_FIELD: "name",
+                      StatusTableInfo.STATUS_TABLE: db.services_status,
+                      StatusTableInfo.STATUS_SUMMARY_TABLE: db.services_status_summary},
+                     {StatusTableInfo.NAMES: devicenames,
+                      StatusTableInfo.SEARCH_FIELD: "name",
+                      StatusTableInfo.STATUS_TABLE: db.devices_status,
+                      StatusTableInfo.STATUS_SUMMARY_TABLE: db.devices_status_summary},
+                     ]
+
+    for status_table_info in status_tables:
+        generate_status_data_for_hour(status_table_info[StatusTableInfo.STATUS_TABLE],
+                                      status_table_info[StatusTableInfo.NAMES],
+                                      status_table_info[StatusTableInfo.SEARCH_FIELD],
+                                      status_table_info[StatusTableInfo.STATUS_SUMMARY_TABLE],
+                                      hour)
+
+
+def generate_status_data_for_hour(status_table, names, search_field, status_summary_table, hour):
+
+    for name in names:
+        status_items_for_hour = status_table.find({search_field: name, "time": {'$regex': '^'+hour}})
+
+        hourly_summary = dict()
+        hourly_summary[search_field] = name
+        hourly_summary["time"] = str(datetime.fromisoformat(hour))
+        hourly_summary["availability"] = 0
+        hourly_summary["response_time"] = 0
+
+        num_availability_records = 0
+        num_response_time_records = 0
+
+        availability = 0
+        response_time = 0.0
+
+        for status_item in status_items_for_hour:
+            num_availability_records += 1
+            if status_item["availability"]:
+                availability += 100
+                response_time += float(status_item["response_time"])
+                num_response_time_records += 1
+
+        if num_availability_records > 0:
+            hourly_summary["availability"] = availability / num_availability_records
+        if num_response_time_records > 0:
+            hourly_summary["response_time"] = response_time / num_response_time_records
+
+        status_summary_table.insert_one(hourly_summary)

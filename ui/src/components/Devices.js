@@ -87,6 +87,10 @@ class Devices extends Component {
         clearInterval(this.interval)
     }
 
+    renderDeviceStatus(name) {
+        this.state.dashboard.setState({name: name, show: "devicestatus"})
+    }
+
     renderCapture(ip) {
         this.state.dashboard.setState({ip: ip, protocol: null, port: null, show: "capture"})
     }
@@ -166,6 +170,13 @@ class Devices extends Component {
                         cellStyle: { fontSize: 14, }
                     }}
                     actions={[
+                        {
+                            icon: 'poll',
+                            tooltip: 'Display Time-Series for Device',
+                            onClick: (event, rowData) => {
+                                this.renderDeviceStatus(rowData.name)
+                            }
+                        },
                         {
                             icon: 'pageview',
                             tooltip: 'Capture packets for host',

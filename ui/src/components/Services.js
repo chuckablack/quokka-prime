@@ -87,6 +87,10 @@ class Services extends Component {
         clearInterval(this.interval)
     }
 
+    renderServiceStatus(name) {
+        this.state.dashboard.setState({name: name, show: "servicestatus"})
+    }
+
     renderCapture(target, type) {
         this.state.dashboard.setState({ip: target, protocol: type, port: null, show: "capture"})
     }
@@ -169,6 +173,13 @@ class Services extends Component {
                         cellStyle: { fontSize: 14, }
                     }}
                     actions={[
+                        {
+                            icon: 'poll',
+                            tooltip: 'Display Time-Series for Service',
+                            onClick: (event, rowData) => {
+                                this.renderServiceStatus(rowData.name)
+                            }
+                        },
                         {
                             icon: 'pageview',
                             tooltip: 'Capture packets for host',
