@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="org.codehaus.jackson:jackson-asl:0.9.5" type="repository">
+    <properties maven-id="org.codehaus.jackson:jackson-asl:0.9.5" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-asl/0.9.5/jackson-asl-0.9.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
