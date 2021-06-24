@@ -42,7 +42,7 @@ export default function DashboardAppBar(props) {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" className={classes.title} style={{paddingLeft: '20px'}}>
-                        <b>QUOKKA Lite</b> Dashboard
+                        <b>QUOKKA Prime</b> Dashboard
                     </Typography>
                     <Button color="inherit" onClick={() => renderDevices(dashboard)}>Devices</Button>
                     <Button color="inherit" onClick={() => renderHosts(dashboard)}>Hosts</Button>

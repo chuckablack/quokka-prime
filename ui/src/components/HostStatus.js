@@ -75,7 +75,9 @@ class HostStatus extends Component {
                         <br /><br />  <br /><br />
                         <b>REFRESH IN</b>:<br/>{this.state.countdownValue} seconds
                         <br/><br/> <br/><br/>
-                        <Button variant="contained" style={{width: '100%'}} onClick={() => this.renderHosts(this.state.dashboard)}>Return to Hosts</Button>
+                        <Button variant="contained" style={{width: '100%'}} 
+                            onClick={() => this.renderHosts(this.state.dashboard)}>Return to Hosts
+                        </Button>
                     </Grid>
 
                     <Grid item style={{width: '85%', paddingRight: '10px'}}>
