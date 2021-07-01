@@ -69,19 +69,14 @@ public class DiscoveryThread extends Thread {
 
         System.out.println("---> Discovery thread running");
 
-        int discoverWaitMinutes;
         while (!terminate) {
             discoverHosts();
 
-            discoverWaitMinutes = 60;
-            while (discoverWaitMinutes > 0) {
-                try {
-                    TimeUnit.MINUTES.sleep(1);
-                } catch (java.lang.InterruptedException e) {
-                    System.out.println("!!! discoveryThread: interrupted exception: " + e);
-                    break;
-                }
-                --discoverWaitMinutes;
+            try {
+                TimeUnit.MINUTES.sleep(60);
+            } catch (java.lang.InterruptedException e) {
+                System.out.println("!!! discoveryThread: interrupted exception: " + e);
+                break;
             }
         }
     }
