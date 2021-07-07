@@ -63,8 +63,8 @@ func pingHost(waitGroup *sync.WaitGroup, host map[string]interface{}) {
 
 	fmt.Fprintln(os.Stdout, "---- pinging host:", host["hostname"])
 	out, err := exec.Command("ping", "-c3", "-n", "-i0.5", "-W2", host["hostname"].(string)).Output()
-	fmt.Fprintln(os.Stdout, host["hostname"], "err:", err)
-	fmt.Fprintln(os.Stdout, host["hostname"], "out:", string(out))
+	// fmt.Fprintln(os.Stdout, host["hostname"], "err:", err)
+	// fmt.Fprintln(os.Stdout, host["hostname"], "out:", string(out))
 
 	if err != nil {
 		host["availability"] = false
