@@ -13,19 +13,6 @@ import (
 	"time"
 )
 
-type hostDef struct {
-	Hostname     string
-	ip           string
-	mac          string
-	availability string
-	resopnseTime string
-	openPorts    string
-}
-
-type hostsDef struct {
-	hosts map[string]hostDef
-}
-
 func getHosts() map[string]map[string]interface{} {
 
 	fmt.Println("getHosts: requesting hosts from quokka server")
@@ -93,14 +80,6 @@ func getResponseTime(pingOutput string) string {
 func updateHost(host map[string]interface{}) {
 
 	fmt.Fprintln(os.Stdout, "---> updating host:", host["hostname"])
-	for key, value := range host {
-		switch value.(type) {
-		case bool:
-			fmt.Printf("%16s : %t\n", key, value)
-		case string:
-			fmt.Printf("%16s : %-s\n", key, value)
-		}
-	}
 
 	jsonHost, err := json.Marshal(host)
 	if err != nil {
@@ -125,30 +104,15 @@ func main() {
 
 	for {
 		mapHosts := getHosts()
-		if mapHosts != nil {
 
-			// for _, host := range mapHosts {
-			// 	fmt.Fprintln(os.Stdout, "---- host:", host["hostname"], "--------------------")
-			// 	fmt.Fprintln(os.Stdout, "---- host:", host)
-			// 	for key, value := range host {
-			// 		switch value.(type) {
-			// 		case bool:
-			// 			fmt.Printf("%16s : %t\n", key, value)
-			// 		case string:
-			// 			fmt.Printf("%16s : %-s\n", key, value)
-			// 		}
-			// 	}
-			// }
-
-			var waitGroup sync.WaitGroup
-			for _, host := range mapHosts {
-				waitGroup.Add(1)
-				go pingHost(&waitGroup, host)
-			}
-			waitGroup.Wait()
-			fmt.Fprintln(os.Stdout, "---> all pings completed")
-
+		var waitGroup sync.WaitGroup
+		for _, host := range mapHosts {
+			waitGroup.Add(1)
+			go pingHost(&waitGroup, host)
 		}
+		waitGroup.Wait()
+
+		fmt.Fprintln(os.Stdout, "---> all pings completed")
 		time.Sleep(60 * time.Second)
 	}
 

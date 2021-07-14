@@ -1,10 +1,10 @@
 - ip_address:
-  name: CSR-sandbox
+  name: IOSXE-sandbox
   os: iosxe
   transport: napalm
-  hostname: ios-xe-mgmt.cisco.com
+  hostname: sandbox-iosxe-recomm-1.cisco.com
   password: C1sco12345
-  ssh_port: 8181
+  ssh_port: 22
   username: developer
   vendor: cisco
   sla_availability: 95
@@ -14,9 +14,21 @@
   name: NXOS-sandbox (SSH)
   os: nxos-ssh
   transport: napalm
-  hostname: sbx-nxos-mgmt.cisco.com
+  hostname: sandbox-nxos-1.cisco.com
   password: Admin_1234!
-  ssh_port: 8181
+  ssh_port: 22
+  username: admin
+  vendor: cisco
+  sla_availability: 95
+  sla_response_time: 15
+
+- ip_address:
+  name: IOSXR-sandbox
+  os: iosxr
+  transport: napalm
+  hostname: sandbox-iosxr-1.cisco.com
+  password: C1sco12345
+  ssh_port: 22
   username: admin
   vendor: cisco
   sla_availability: 95

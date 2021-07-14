@@ -8,6 +8,7 @@ import yaml
 import socket
 import time
 import re
+import copy
 from concurrent.futures import ThreadPoolExecutor
 
 MONITOR_INTERVAL = 60
@@ -76,8 +77,8 @@ def discovery():
             device["ip_address"] = ""
 
         if device["name"] in existing_devices:
-            existing_devices[device["name"]]["ip_address"] = device["ip_address"]
-            device = existing_devices[device["name"]]
+            device["availability"] = existing_devices[device["name"]]["availability"]
+            device["response_time"] = existing_devices[device["name"]]["response_time"]
 
         else:
             device["availability"] = False
