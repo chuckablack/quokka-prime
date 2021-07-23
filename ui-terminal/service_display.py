@@ -28,7 +28,7 @@ def print_services(services, previous_services):
 
         if not service["availability"]:
             color = Fore.RED
-        elif service["response_time"] > service["sla_response_time"]:
+        elif float(service["response_time"]) > float(service["sla_response_time"]):
             color = Fore.LIGHTCYAN_EX
         elif service["name"] in previous_services and service == previous_services[service["name"]]:
             color = Fore.GREEN
@@ -42,7 +42,7 @@ def print_services(services, previous_services):
             + f"   {service['target'][:22]:<22}"
             + f"   {service['data'][:18]:>18}"
             + f"   {str(service['availability']):>5}"
-            + f"   {service['response_time']:>5.2f}"
+            + f"   {service['response_time']:>5}"
             + f"  {service['last_heard']:>16}"
             + Fore.WHITE
         )
