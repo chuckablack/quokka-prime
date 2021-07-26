@@ -10,7 +10,12 @@ from quokka_constants import DISPLAY_WAIT_TIME
 
 def get_hosts():
 
-    response = requests.get("http://127.0.0.1:5001/hosts")
+    try:
+        response = requests.get("http://127.0.0.1:5001/hosts")
+    except requests.ConnectionError as e:
+        print(f"!!! connection error: {e}")
+        return {}
+
     if response.status_code != 200:
         print(f"get hosts failed: {response.reason}")
         return {}

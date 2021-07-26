@@ -9,7 +9,12 @@ from quokka_constants import DISPLAY_WAIT_TIME
 
 def get_services():
 
-    response = requests.get("http://127.0.0.1:5001/services")
+    try:
+        response = requests.get("http://127.0.0.1:5001/services")
+    except requests.ConnectionError as e:
+        print(f"!!! connection error: {e}")
+        return {}
+
     if response.status_code != 200:
         print(f"get services failed: {response.reason}")
         return {}

@@ -11,7 +11,12 @@ from quokka_constants import DISPLAY_WAIT_TIME
 
 def get_devices():
 
-    response = requests.get("http://127.0.0.1:5001/devices")
+    try:
+        response = requests.get("http://127.0.0.1:5001/devices")
+    except requests.ConnectionError as e:
+        print(f"!!! connection error: {e}")
+        return {}
+
     if response.status_code != 200:
         print(f"get devices failed: {response.reason}")
         return {}
@@ -26,7 +31,7 @@ def get_compliance_color(device):
     elif device["os_version"] != compliance_table[device["vendor"]][device["model"]]:
         return Fore.LIGHTYELLOW_EX
     else:
-        return ""
+        return Fore.LIGHTGREEN_EX
 
 
 def print_devices(devices, previous_devices):
@@ -50,12 +55,12 @@ def print_devices(devices, previous_devices):
 
         print(
             color
-            + f"  {device['hostname'][:26]:<24}"
+            + f"  {device['hostname'][:24]:<24}"
             + f"  {device['ip_address']:>16}"
             + f"   {device['model'][:16]:<16}"
-            + f"   {version:>7}"
+            + f"   {version:<16}"  # Note: needs extra characters because of colors
             + f"   {str(device['availability']):>5}"
-            + f"   {device['response_time']:>5.2f}"
+            + f"   {device['response_time']:>5}"
             + f"  {device['last_heard']:>16}"
             + Fore.WHITE
         )
