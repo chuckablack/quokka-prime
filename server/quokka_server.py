@@ -47,7 +47,7 @@ atexit.register(shutdown)  # causes shutdown() to get called when exiting
 @api.route("/hosts")
 class HostsEndpoint(Resource):
 
-    decorators = [limiter.limit("60/minute")]
+    decorators = [limiter.limit("120/minute")]
 
     @staticmethod
     @api.response(200, 'Success', ApiModels.hosts_response)
@@ -71,7 +71,7 @@ class HostsEndpoint(Resource):
 @api.route("/devices")
 class DevicesEndpoint(Resource):
 
-    decorators = [limiter.limit("60/minute")]
+    decorators = [limiter.limit("120/minute")]
 
     @staticmethod
     @api.response(200, 'Success', ApiModels.devices_response)
@@ -95,7 +95,7 @@ class DevicesEndpoint(Resource):
 @api.route("/services")
 class ServicesEndpoint(Resource):
 
-    decorators = [limiter.limit("60/minute")]
+    decorators = [limiter.limit("120/minute")]
 
     @staticmethod
     @api.response(200, 'Success', [ApiModels.services_response])
@@ -119,7 +119,7 @@ class ServicesEndpoint(Resource):
 @api.route("/scan")
 class ScanEndpoint(Resource):
 
-    decorators = [limiter.limit("60/minute")]
+    decorators = [limiter.limit("120/minute")]
 
     @staticmethod
     @api.doc(params={"token": "The token returned from the corresponding POST that initiated the portscan",
@@ -151,7 +151,7 @@ class ScanEndpoint(Resource):
 @api.route("/worker/portscan")
 class WorkerScanEndpoint(Resource):
 
-    decorators = [limiter.limit("60/minute")]
+    decorators = [limiter.limit("120/minute")]
 
     @staticmethod
     @api.doc(body=ApiModels.portscan_data)
@@ -166,7 +166,7 @@ class WorkerScanEndpoint(Resource):
 @api.route("/traceroute")
 class TracerouteEndpoint(Resource):
 
-    decorators = [limiter.limit("60/minute")]
+    decorators = [limiter.limit("120/minute")]
 
     @staticmethod
     @api.doc(params={"token": "The token returned from the corresponding POST that initiated the traceroute",
@@ -202,7 +202,7 @@ class TracerouteEndpoint(Resource):
 @api.route("/worker/traceroute")
 class WorkerTracerouteEndpoint(Resource):
 
-    decorators = [limiter.limit("60/minute")]
+    decorators = [limiter.limit("120/minute")]
 
     @staticmethod
     @api.doc(body=ApiModels.traceroute_data)
@@ -217,7 +217,7 @@ class WorkerTracerouteEndpoint(Resource):
 @api.route("/capture")
 class CaptureEndpoint(Resource):
 
-    decorators = [limiter.limit("60/minute")]
+    decorators = [limiter.limit("120/minute")]
 
     @staticmethod
     @api.doc(params={"ip": "The ip address for which to capture packets",
@@ -278,7 +278,7 @@ class WorkerCaptureEndpoint(Resource):
 @api.route("/host/status")
 class HostStatusEndpoint(Resource):
 
-    decorators = [limiter.limit("60/minute")]
+    decorators = [limiter.limit("120/minute")]
 
     @staticmethod
     @api.doc(params={"hostname": "Hostname of host to get status for",
@@ -309,7 +309,7 @@ class HostStatusEndpoint(Resource):
 @api.route("/service/status")
 class ServiceStatusEndpoint(Resource):
 
-    decorators = [limiter.limit("60/minute")]
+    decorators = [limiter.limit("120/minute")]
 
     @staticmethod
     @api.doc(params={"name": "Name of service to get status for",
@@ -340,7 +340,7 @@ class ServiceStatusEndpoint(Resource):
 @api.route("/device/status")
 class DeviceStatusEndpoint(Resource):
 
-    decorators = [limiter.limit("60/minute")]
+    decorators = [limiter.limit("120/minute")]
 
     @staticmethod
     @api.doc(params={"name": "Name of device to get status for",
