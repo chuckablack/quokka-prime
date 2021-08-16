@@ -130,3 +130,6 @@ dmypy.json
 
 ui/node_modules/
 workers/tmp-traceroute-graph.png
+monitors/go/.vscode/
+monitors/go/go-host-monitor.code-workspace
+
