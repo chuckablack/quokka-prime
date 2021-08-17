@@ -62,6 +62,22 @@ def start_capture(ip, protocol, port, capture_time):
     send_worker_request("localhost", capture_info_json, key=ip)
 
 
+def start_snoop(ip, protocol, port, snoop_time):
+
+    print(f"starting snoop for ip: {ip}, protocol: {protocol}, port: {port}, time: {snoop_time}")
+
+    snoop_info = {
+        "quokka": get_my_ip_address() + ":5001",
+        "work_type": "snoop",
+        "ip": ip,
+        "protocol": protocol,
+        "port": port,
+        "snoop_time": snoop_time,
+    }
+    snoop_info_json = json.dumps(snoop_info)
+    send_worker_request("localhost", snoop_info_json, key=ip)
+
+
 def send_worker_request(broker, message, key):
 
     print(f"looking for worker for key: {key}")

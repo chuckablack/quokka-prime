@@ -13,6 +13,7 @@ from TracerouteThread import TracerouteThread
 CAPTURE = "capture"
 PORTSCAN = "portscan"
 TRACEROUTE = "traceroute"
+SNOOP = "snoop"
 
 
 def start_receiving():
@@ -49,7 +50,7 @@ def receive_work_request(capture_channel, method, _, body):
     if "work_type" not in work_info:
         print(f" !!! Received work request with no work_type: {work_info}")
         return
-    if work_info["work_type"] not in [CAPTURE, PORTSCAN, TRACEROUTE]:
+    if work_info["work_type"] not in [CAPTURE, PORTSCAN, TRACEROUTE, SNOOP]:
         print(f" !!! Received work request for unknown work_type: {work_info['work_type']}")
         return
 
@@ -74,6 +75,8 @@ def process_work_request(work_type, work_info):
         work_thread = PortscanThread(quokka, work_info)
     elif work_type == TRACEROUTE:
         work_thread = TracerouteThread(quokka, work_info)
+    elif work_type == SNOOP:
+        work_thread = CaptureThread(quokka, work_info, snoop=True)
     else:
         print(f" !!! Invalid work_type: {work_type}, should have been caught earlier")
         return

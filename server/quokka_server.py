@@ -23,8 +23,8 @@ from db_apis import get_all_devices, set_device, get_device, get_device_status, 
 from db_apis import get_all_services, set_service, get_service, get_service_status, get_service_status_summary
 from db_apis import get_capture, get_portscan, get_traceroute
 
-from db_apis import record_portscan_data, record_traceroute_data, record_capture_data
-from worker_apis import start_portscan, start_traceroute, start_capture
+from db_apis import record_portscan_data, record_traceroute_data, record_capture_data, record_snoop_data
+from worker_apis import start_portscan, start_traceroute, start_capture, start_snoop
 
 limiter = Limiter(quokka_app, key_func=get_remote_address)
 
@@ -271,6 +271,56 @@ class WorkerCaptureEndpoint(Resource):
     def post():
         capture_data = request.get_json()
         record_capture_data(capture_data)
+
+        return {}, 204
+
+
+@api.route("/snoop")
+class SnoopEndpoint(Resource):
+
+    decorators = [limiter.limit("120/minute")]
+
+    @staticmethod
+    # @api.doc(params={"ip": "The ip address for which to snoop packets",
+    #                  "protocol": "The protocol for which to snoop packets",
+    #                  "port": "The port for which to snoop packets",
+    #                  "num_packets": "The number of packets to retrieve"})
+    @api.response(200, 'Success', ApiModels.snoop_data)
+    def get():
+
+        return {}
+
+    @staticmethod
+    @api.doc(params={"ip": "The ip address for which to snoop packets",
+                     "protocol": "The protocol for which to snoop packets",
+                     "port": "The port for which to snoop packets",
+                     "snoop_time": "The time to snoop packets"})
+    @api.response(200, 'Snoop initiated')
+    def post():
+
+        ip = request.args.get("ip")
+        protocol = request.args.get("protocol")
+        port = request.args.get("port")
+        snoop_time = request.args.get("snoop_time")
+
+        if ip: ip = get_ip_address_from_target(ip)
+
+        if not snoop_time: snoop_time = 180
+        else:  snoop_time = int(snoop_time)
+
+        start_snoop(ip, protocol, port, snoop_time)
+        return "Snoop initiated", 200
+
+
+@api.route("/worker/snoop")
+class WorkerSnoopEndpoint(Resource):
+
+    @staticmethod
+    @api.doc(body=ApiModels.snoop_data)
+    @api.response(204, 'Success')
+    def post():
+        snoop_data = request.get_json()
+        record_snoop_data(snoop_data)
 
         return {}, 204
 

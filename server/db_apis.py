@@ -202,6 +202,21 @@ def record_capture_data(capture_data):
         db.captures.insert_one(packet)
 
 
+def record_snoop_data(snoop_data):
+
+    for captured_packet in snoop_data["packets"]:
+
+        packet = dict()
+        packet["timestamp"] = str(datetime.now())[:-3]
+        packet["local_timestamp"] = snoop_data["timestamp"]
+        packet["source"] = snoop_data["source"]
+
+        packet["packet_hexdump"] = captured_packet["hexdump"]
+        packet["packet_json"] = pformat(captured_packet)
+
+        db.snoops.insert_one(packet)
+
+
 def get_portscan(target, token):
 
     max_wait_time = 300  # extended port scan allowed to take 5 minutes max

@@ -11,7 +11,7 @@ from util import bytes_to_string, send_capture
 
 class CaptureThread(Thread):
 
-    def __init__(self, destination, capture_info):
+    def __init__(self, destination, capture_info, snoop=False):
         super().__init__()
         print(
             f"CaptureThread: initializing thread object: destination={destination}, capture info={capture_info}"
@@ -27,6 +27,7 @@ class CaptureThread(Thread):
 
         self.capture_time = capture_info["capture_time"]
         self.destination = destination
+        self.snoop = snoop
 
     @staticmethod
     def get_interface(ip):
@@ -61,6 +62,7 @@ class CaptureThread(Thread):
             self.destination,
             str(datetime.now())[:-1],
             [packet_dict_no_bytes],
+            self.snoop
         )
         print(f"CaptureThread: capture sent, result={status_code}\n")
 
@@ -71,7 +73,6 @@ class CaptureThread(Thread):
         )
         sniff(
             iface=self.interface,
-            #iface="wlan1",
             filter=self.capture_filter,
             timeout=self.capture_time,
             prn=self.process_packet,

@@ -48,15 +48,19 @@ def get_packets_from_capture(capture):
     return packets
 
 
-def send_capture(source, destination, timestamp, packets):
+def send_capture(source, destination, timestamp, packets, snoop=False):
 
     capture_payload = {
         "source": source,
         "timestamp": timestamp,
         "packets": packets,
     }
+    if not snoop:
+        endpoint = "/worker/capture"
+    else:
+        endpoint = "/snoop/capture"
     rsp = requests.post(
-        "http://" + destination + "/worker/capture", json=capture_payload
+        "http://" + destination + endpoint, json=capture_payload
     )
     if rsp.status_code != 204:
         print(
