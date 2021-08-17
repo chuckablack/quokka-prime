@@ -72,7 +72,7 @@ def start_snoop(ip, protocol, port, snoop_time):
         "ip": ip,
         "protocol": protocol,
         "port": port,
-        "snoop_time": snoop_time,
+        "capture_time": snoop_time,
     }
     snoop_info_json = json.dumps(snoop_info)
     send_worker_request("localhost", snoop_info_json, key=ip)

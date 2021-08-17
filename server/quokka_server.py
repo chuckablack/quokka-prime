@@ -285,7 +285,7 @@ class SnoopEndpoint(Resource):
     #                  "protocol": "The protocol for which to snoop packets",
     #                  "port": "The port for which to snoop packets",
     #                  "num_packets": "The number of packets to retrieve"})
-    @api.response(200, 'Success', ApiModels.snoop_data)
+    @api.response(200, 'Success', ApiModels.capture_data)
     def get():
 
         return {}
@@ -316,7 +316,7 @@ class SnoopEndpoint(Resource):
 class WorkerSnoopEndpoint(Resource):
 
     @staticmethod
-    @api.doc(body=ApiModels.snoop_data)
+    @api.doc(body=ApiModels.capture_data)
     @api.response(204, 'Success')
     def post():
         snoop_data = request.get_json()

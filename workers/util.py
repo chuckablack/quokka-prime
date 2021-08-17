@@ -58,7 +58,7 @@ def send_capture(source, destination, timestamp, packets, snoop=False):
     if not snoop:
         endpoint = "/worker/capture"
     else:
-        endpoint = "/snoop/capture"
+        endpoint = "/worker/snoop"
     rsp = requests.post(
         "http://" + destination + endpoint, json=capture_payload
     )
