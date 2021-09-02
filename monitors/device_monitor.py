@@ -140,7 +140,7 @@ def get_device_facts(device):
         device["response_time"] = f"{response_time:.4f}"
         device["last_heard"] = str(datetime.now())[:-3]
 
-    except NapalmException as e:
+    except BaseException as e:
         print(f"  !!! Failed to get facts for device {device['name']}: {e}")
         device["availability"] = False
 

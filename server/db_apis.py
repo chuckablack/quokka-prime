@@ -214,7 +214,7 @@ def record_snoop_data(snoop_data):
         packet["packet_hexdump"] = captured_packet["hexdump"]
         packet["packet_json"] = pformat(captured_packet)
 
-        db.snoops.insert_one(packet)
+        db.snoop_captures.insert_one(packet)
 
 
 def get_portscan(target, token):
@@ -275,7 +275,7 @@ def trim_tables(status_expire_after, diagnostics_expire_after):
         status_table.delete_many({"time": {"$lt": str(status_expire_after)}})
 
     for diagnostics_table in [db.captures, db.traceroutes, db.portscans]:
-        diagnostics_table.delete_many({"time": {"$lt": str(diagnostics_expire_after)}})
+        diagnostics_table.delete_many({"timestamp": {"$lt": str(diagnostics_expire_after)}})
 
 
 def create_summaries(hour):
