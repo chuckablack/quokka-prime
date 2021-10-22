@@ -9,7 +9,7 @@ import requests
 from quokka_constants import DISPLAY_WAIT_TIME
 
 
-parser = argparse.ArgumentParser(description="Host Monitor")
+parser = argparse.ArgumentParser(description="Host Display")
 parser.add_argument('--quokka', default="localhost:5001", help='Hostname/IP and port of the quokka server')
 
 args = parser.parse_args()

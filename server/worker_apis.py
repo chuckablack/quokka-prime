@@ -78,7 +78,7 @@ def send_worker_request(broker, message, key):
 
 def find_worker_name(key):
 
-    with open("../server/workers.yaml", "r") as yaml_in:
+    with open("../monitors/workers.yaml", "r") as yaml_in:
         yaml_workers = yaml_in.read()
         workers = yaml.safe_load(yaml_workers)
 
