@@ -4,5 +4,5 @@
 #0.0.0.0/0:
 #  worker-name: home-subnet
 
-192.168.254.0/24:
+10.0.0.0/24:
   worker-name: localhost

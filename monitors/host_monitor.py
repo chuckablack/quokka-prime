@@ -45,7 +45,7 @@ def discovery():
     print(
         "\n\n----- Discovery hosts on network using arping() function ---------------------"
     )
-    ans, unans = scapy.arping("192.168.254.0/24")
+    ans, unans = scapy.arping("10.0.0.0/24")
     ans.summary()
 
     for res in ans.res:
