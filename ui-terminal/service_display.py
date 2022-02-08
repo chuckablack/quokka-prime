@@ -1,16 +1,23 @@
 import os
 import subprocess
 import sys
+import argparse
 from time import sleep
 from colorama import Fore
 import requests
 from quokka_constants import DISPLAY_WAIT_TIME
 
+parser = argparse.ArgumentParser(description="Service Display")
+parser.add_argument('--quokka', default="localhost:5001", help='Hostname/IP and port of the quokka server')
+
+args = parser.parse_args()
+quokka = args.quokka
+
 
 def get_services():
 
     try:
-        response = requests.get("http://127.0.0.1:5001/services")
+        response = requests.get(f"http://{quokka}/services")
     except requests.ConnectionError as e:
         print(f"!!! connection error: {e}")
         return {}

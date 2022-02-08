@@ -1,3 +1,4 @@
+#!/bin/bash
 quokka=${1:-localhost:5001}
 sudo python3 host_monitor.py --quokka $quokka &
 sudo python3 host_portscan.py --quokka $quokka &
