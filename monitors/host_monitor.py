@@ -65,7 +65,7 @@ def discovery():
             "hostname": hostname[0],
             "last_heard": last_heard,
             "availability": True,
-            "response_time": 0
+            "response_time": "0"
         }
         update_host(host)
 

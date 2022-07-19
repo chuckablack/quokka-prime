@@ -70,22 +70,19 @@ def discovery():
 
     for device in devices:
 
+        if device["name"] in existing_devices: continue
+
         try:
             device["ip_address"] = socket.gethostbyname(device["hostname"])
         except (socket.error, socket.gaierror) as e:
             print(f"  !!! Error attempting to get ip address for device {device['hostname']}: {e}")
             device["ip_address"] = ""
 
-        if device["name"] in existing_devices:
-            device["availability"] = existing_devices[device["name"]]["availability"]
-            device["response_time"] = existing_devices[device["name"]]["response_time"]
-
-        else:
-            device["availability"] = False
-            device["response_time"] = "0.0"
-            device["model"] = ""
-            device["os_version"] = ""
-            device["last_heard"] = ""
+        device["availability"] = False
+        device["response_time"] = "0.0"
+        device["model"] = ""
+        device["os_version"] = ""
+        device["last_heard"] = ""
 
         update_device(device)
 

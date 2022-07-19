@@ -2,7 +2,7 @@
   name: IOSXE-sandbox
   os: iosxe
   transport: napalm
-  hostname: sandbox-iosxe-recomm-1.cisco.com
+  hostname: sandbox-iosxe-latest-1.cisco.com
   password: C1sco12345
   ssh_port: 22
   username: developer

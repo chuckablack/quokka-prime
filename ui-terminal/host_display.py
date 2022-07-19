@@ -33,7 +33,7 @@ def get_hosts():
 def set_missing_fields(host):
 
     for fieldname in ["hostname", "ip_address", "mac_address", "availability", "last_heard", "open_tcp_ports"]:
-        if fieldname not in host:
+        if fieldname not in host or host[fieldname] is None:
             host[fieldname] = ""
 
 
