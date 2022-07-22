@@ -46,7 +46,7 @@ def print_devices(devices, previous_devices):
     subprocess.call("clear" if os.name == "posix" else "cls")
     print(
         "\n  __Device_Name___________   ___IP_address___  ______Model_____ "
-        + " _Version_ _Avail_ __Rsp_  __Last_Heard___________\n"
+        + "  _Version_  _Avail_ __Rsp_  __Last_Heard___________\n"
     )
     for device in devices.values():
 
@@ -65,7 +65,7 @@ def print_devices(devices, previous_devices):
             + f"  {device['hostname'][:24]:<24}"
             + f"  {device['ip_address']:>16}"
             + f"   {device['model'][:16]:<16}"
-            + f"   {version:<16}"  # Note: needs extra characters because of colors
+            + f"   {version:<18}"  # Note: needs extra characters because of colors
             + f"   {str(device['availability']):>5}"
             + f"   {device['response_time']:>5}"
             + f"  {device['last_heard']:>16}"

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "0dwLwaotaHjIrX67Qib4eCU2c/Rtk+Y5AmjEBCNFbw8=",
+  "Source": "QuokkaServer",
+  "BasePath": "_content/QuokkaServer",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
