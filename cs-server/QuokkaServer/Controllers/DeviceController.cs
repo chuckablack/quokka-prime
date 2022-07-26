@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using QuokkaServer.Db;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using System.Net;
-using System.Web;
 
 namespace QuokkaServer.Controllers;
 
@@ -24,60 +21,72 @@ public class DeviceController : ControllerBase
     [HttpGet(Name = "GetAllDevices")]
     public IDictionary<string, Device> Get()
     {
-        MongoClient dbClient = MongoService.dbClient;
-        var dbQuokka = dbClient.GetDatabase("quokkadb");
+        // MongoClient dbClient = MongoService.dbClient;
+        // var dbQuokka = dbClient.GetDatabase("quokkadb");
 
-        var collectionDevices = dbQuokka.GetCollection<BsonDocument>("devices");
-        Console.WriteLine("---> successfully got devices: " + collectionDevices);
+        // var collectionDevices = dbQuokka.GetCollection<BsonDocument>("devices");
+        // Console.WriteLine("---> successfully got devices: " + collectionDevices);
 
-        var devicesBson = collectionDevices.Find(new BsonDocument()).ToList();
+        // var devicesBson = collectionDevices.Find(new BsonDocument()).ToList();
 
-        var devices = new Dictionary<string, Device>();
-        foreach (BsonDocument deviceBson in devicesBson)
-        {
-            Console.WriteLine("--- device ---> " + deviceBson.ToString());
-            Device device = BsonSerializer.Deserialize<Device>(deviceBson);
-            devices[device.name] = device;
-        }
-        return devices;
+        // var devices = new Dictionary<string, Device>();
+        // foreach (BsonDocument deviceBson in devicesBson)
+        // {
+        //     Console.WriteLine("--- device ---> " + deviceBson.ToString());
+        //     Device device = BsonSerializer.Deserialize<Device>(deviceBson);
+        //     devices[device.name] = device;
+        // }
+        // return devices;
+
+        return Device.GetDevices();
     }
 
     [HttpGet("{name}")]
     public ActionResult<Device> Get(string name)
     {
-        var dbQuokka = MongoService.dbClient.GetDatabase("quokkadb");
-        var collectionDevices = dbQuokka.GetCollection<BsonDocument>("devices");
+        // var dbQuokka = MongoService.dbClient.GetDatabase("quokkadb");
+        // var collectionDevices = dbQuokka.GetCollection<BsonDocument>("devices");
 
-        var filter = Builders<BsonDocument>.Filter.Eq("name", name);
-        var deviceBson = collectionDevices.Find(filter).FirstOrDefault();
+        // var filter = Builders<BsonDocument>.Filter.Eq("name", name);
+        // var deviceBson = collectionDevices.Find(filter).FirstOrDefault();
 
-        if (deviceBson is null) {
+        // if (deviceBson is null) {
+        //     return NotFound();
+        // }
+        // return BsonSerializer.Deserialize<Device>(deviceBson);
+
+        var device = Device.GetDevice(name);
+        if (device is null)
+        {
             return NotFound();
         }
-        return BsonSerializer.Deserialize<Device>(deviceBson);
+        return device;
     }
 
     [HttpPut(Name = "UpdateDevice")]
     public IActionResult Put(Device device)
     {
-        Console.WriteLine("---> made it to put device\n  ---> " + JsonConvert.SerializeObject(device));
+        // Console.WriteLine("---> made it to put device\n  ---> " + JsonConvert.SerializeObject(device));
 
-        var dbQuokka = MongoService.dbClient.GetDatabase("quokkadb");
-        var collectionDevices = dbQuokka.GetCollection<BsonDocument>("devices");
-        Console.WriteLine("---> devices collection: " + collectionDevices);
+        // var dbQuokka = MongoService.dbClient.GetDatabase("quokkadb");
+        // var collectionDevices = dbQuokka.GetCollection<BsonDocument>("devices");
+        // Console.WriteLine("---> devices collection: " + collectionDevices);
 
-        var filter = Builders<BsonDocument>.Filter.Eq("name", device.name);
-        var deviceBson = collectionDevices.Find(filter).FirstOrDefault();
+        // var filter = Builders<BsonDocument>.Filter.Eq("name", device.name);
+        // var deviceBson = collectionDevices.Find(filter).FirstOrDefault();
 
-        if (deviceBson is null) {
-            collectionDevices.InsertOne(device.ToBsonDocument());
-        }
-        else {
-            collectionDevices.ReplaceOne(filter, device.ToBsonDocument());
-        }
+        // if (deviceBson is null) {
+        //     collectionDevices.InsertOne(device.ToBsonDocument());
+        // }
+        // else {
+        //     collectionDevices.ReplaceOne(filter, device.ToBsonDocument());
+        // }
 
-        Console.WriteLine("---> successfully inserted/updated device");
+        // Console.WriteLine("---> successfully inserted/updated device");
 
+        // return NoContent();
+
+        Device.SetDevice(device);
         return NoContent();
     }
 
