@@ -1,9 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using QuokkaServer.Db;
-using MongoDB.Driver;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 
 namespace QuokkaServer.Controllers;
 
@@ -11,13 +6,6 @@ namespace QuokkaServer.Controllers;
 [Route("services")]
 public class ServiceController : ControllerBase
 {
-    private readonly ILogger<ServiceController> _logger;
-
-    public ServiceController(ILogger<ServiceController> logger)
-    {
-        _logger = logger;
-    }
-
     [HttpGet(Name = "GetAllServices")]
     public IDictionary<string, Service> Get()
     {
@@ -39,6 +27,7 @@ public class ServiceController : ControllerBase
     public IActionResult Put(Service service)
     {
         Service.SetService(service);
+        ServiceStatus.SetServiceStatus(new ServiceStatus(service));
         return NoContent();
     }
 

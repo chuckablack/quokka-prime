@@ -20,22 +20,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 MongoService mongoService = new MongoService();
 mongoService.connect();
-MongoClient dbClient = MongoService.dbClient;
-// MongoClient dbClient = new MongoClient("mongodb://localhost:27017");
-
-var dbList = dbClient.ListDatabases().ToList();
-
-Console.WriteLine("The list of databases on this server is: ");
-foreach (var db in dbList)
-{
-    Console.WriteLine(db);
-}
 
 app.Run();

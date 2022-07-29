@@ -32,17 +32,17 @@ public class Host : BaseModel
     public static IDictionary<string, Host> GetHosts()
     {
         var collectionHosts = GetMongoDB().GetCollection<BsonDocument>("hosts");
-        Console.WriteLine("---> successfully got hosts: " + collectionHosts);
-
         var hostsBson = collectionHosts.Find(new BsonDocument()).ToList();
 
         var hosts = new Dictionary<string, Host>();
         foreach (BsonDocument hostBson in hostsBson)
         {
-            Console.WriteLine("--- host ---> " + hostBson.ToString());
+            // Console.WriteLine("--- host ---> " + hostBson.ToString());
             Host host = BsonSerializer.Deserialize<Host>(hostBson);
             hosts[host.hostname] = host;
         }
+
+        Console.WriteLine("---> successfully got hosts: " + collectionHosts);
         return hosts;
     }
 
