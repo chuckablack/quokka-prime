@@ -168,7 +168,7 @@ class Hosts extends Component {
                                 return {color: 'chartreuse'}
                             }
                         },
-                        cellStyle: { fontSize: 14, }
+//                        cellStyle: { fontSize: 14, }
                     }}
                     actions={[
                         {

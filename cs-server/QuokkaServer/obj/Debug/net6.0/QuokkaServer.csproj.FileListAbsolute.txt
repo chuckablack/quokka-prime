@@ -142,3 +142,8 @@ C:/Users/socce/QuokkaServer/bin/Debug/net6.0/runtimes/win/native/mongocrypt.dll
 /home/chuck/quokka-prime/cs-server/QuokkaServer/obj/Debug/net6.0/QuokkaServer.pdb
 /home/chuck/quokka-prime/cs-server/QuokkaServer/obj/Debug/net6.0/QuokkaServer.genruntimeconfig.cache
 /home/chuck/quokka-prime/cs-server/QuokkaServer/obj/Debug/net6.0/ref/QuokkaServer.dll
+/home/chuck/quokka-prime/cs-server/QuokkaServer/bin/Debug/net6.0/System.Web.Cors.dll
+/home/chuck/quokka-prime/cs-server/QuokkaServer/bin/Debug/net6.0/System.Net.Http.Formatting.dll
+/home/chuck/quokka-prime/cs-server/QuokkaServer/bin/Debug/net6.0/System.Web.Http.dll
+/home/chuck/quokka-prime/cs-server/QuokkaServer/bin/Debug/net6.0/System.Web.Http.Cors.dll
+/home/chuck/quokka-prime/cs-server/QuokkaServer/bin/Debug/net6.0/Newtonsoft.Json.Bson.dll

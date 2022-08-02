@@ -10,6 +10,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors();
+builder.Services.AddMvc();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +25,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseCors(options => options.WithOrigins("http://localhost:3000").AllowAnyMethod());
 
 MongoService mongoService = new MongoService();
 mongoService.connect();
