@@ -1,4 +1,4 @@
-namespace QuokkaServer;
+namespace QuokkaServer.Db;
 
 using MongoDB.Bson;
 using MongoDB.Driver;

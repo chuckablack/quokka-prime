@@ -1,4 +1,4 @@
-namespace QuokkaServer;
+namespace QuokkaServer.Db;
 
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -27,12 +27,12 @@ public class HostStatus : BaseModel
         this.response_time = host.response_time;
     }
 
-    public static IList<HostStatus>? GetHostStatus(string hostname)
+    public static IList<HostStatus> GetHostStatus(string hostname, int dataPoints)
     {
         var collectionHosts = GetMongoDB().GetCollection<BsonDocument>("hostStatus");
 
         var filter = Builders<BsonDocument>.Filter.Eq("hostname", hostname);
-        var hostStatusDataBson = collectionHosts.Find(filter).ToList();
+        var hostStatusDataBson = collectionHosts.Find(filter).Sort("{time:-1}").Limit(dataPoints).ToList();
 
         var hostStatusData = new List<HostStatus>();
         foreach (BsonDocument hostStatusBson in hostStatusDataBson)

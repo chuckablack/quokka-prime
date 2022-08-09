@@ -1,4 +1,4 @@
-namespace QuokkaServer;
+namespace QuokkaServer.Db;
 
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -62,6 +62,7 @@ public class Host : BaseModel
     public static void SetHost(Host host)
     {
         Console.WriteLine("---> made it to put host\n  ---> " + JsonConvert.SerializeObject(host));
+        if (host.open_tcp_ports == null) {host.open_tcp_ports = "";} // need to protect against null value
 
         var collectionHosts = GetMongoDB().GetCollection<BsonDocument>("hosts");
         Console.WriteLine("---> hosts collection: " + collectionHosts);
@@ -73,11 +74,6 @@ public class Host : BaseModel
             collectionHosts.InsertOne(host.ToBsonDocument());
         }
         else {
-            // if open_tcp_ports is not present, don't overwrite it
-            var current_open_tcp_ports = hostBson.GetValue("open_tcp_ports");
-            if ((host.open_tcp_ports == null) && (current_open_tcp_ports is not MongoDB.Bson.BsonNull)) {
-                host.open_tcp_ports = (string)hostBson.GetValue("open_tcp_ports");
-            }
             collectionHosts.ReplaceOne(filter, host.ToBsonDocument());
         }
 

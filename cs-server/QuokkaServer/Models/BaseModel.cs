@@ -1,11 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using QuokkaServer.Db;
-using MongoDB.Driver;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
+namespace QuokkaServer.Db;
 
-namespace QuokkaServer;
+using MongoDB.Driver;
 
 public class BaseModel
 {

@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace QuokkaServer.Controllers;
+
+using Microsoft.AspNetCore.Mvc;
+using QuokkaServer.Db;
 
 [ApiController]
 [Route("hosts")]

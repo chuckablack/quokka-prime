@@ -70,3 +70,4 @@
   target: 192.168.254.34
   sla_availability: 99
   sla_response_time: 1.0
+
