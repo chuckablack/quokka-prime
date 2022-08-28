@@ -16,7 +16,8 @@ class TrimTables : BaseModel
     // Non-static method
     public void Trim()
     {
-        while (true) {
+        while (true) 
+        {
             DateTime trimTime = DateTime.Now.AddHours(-24);
             var trimTimeStr = trimTime.ToString("yyyy-MM-dd HH:mm:ss");
             var filter = Builders<BsonDocument>.Filter.Lt("time", trimTimeStr);

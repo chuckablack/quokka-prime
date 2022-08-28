@@ -30,8 +30,13 @@ app.UseCors(options => options.WithOrigins("http://localhost:3000").AllowAnyMeth
 MongoService mongoService = new MongoService();
 mongoService.connect();
 
-TrimTables tt = new TrimTables(300);  // trim tables every 5 minutes
-Thread thr = new Thread(new ThreadStart(tt.Trim));
-thr.Start();
+TrimTables trimTables = new TrimTables(300);  // trim tables every 5 minutes
+Thread ttThread = new Thread(new ThreadStart(trimTables.Trim));
+ttThread.Start();
+
+DoSummaries doSummaries = new DoSummaries(300);  // check for doing summaries every 5 minutes
+Thread summaryThread = new Thread(new ThreadStart(doSummaries.Summarize));
+summaryThread.Start();
+
 
 app.Run();

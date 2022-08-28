@@ -21,7 +21,7 @@ public class ServiceStatusController : ControllerBase
         Dictionary<string, object> serviceStatusReply = new Dictionary<string, object>();
         serviceStatusReply["service"] = service;
         serviceStatusReply["status"] = ServiceStatus.GetServiceStatus(name, dataPoints);
-        serviceStatusReply["summary"] = new List<ServiceStatus>();
+        serviceStatusReply["summary"] = ServiceStatusSummary.GetServiceStatusSummary(name, dataPoints);
         return Ok(serviceStatusReply);
     }
 }

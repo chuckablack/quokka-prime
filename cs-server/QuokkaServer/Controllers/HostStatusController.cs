@@ -24,7 +24,7 @@ public class HostStatusController : ControllerBase
         Dictionary<string, object> hostStatusReply = new Dictionary<string, object>();
         hostStatusReply["host"] = host;
         hostStatusReply["status"] = HostStatus.GetHostStatus(hostname, dataPoints);
-        hostStatusReply["summary"] = new List<HostStatus>();
+        hostStatusReply["summary"] = HostStatusSummary.GetHostStatusSummary(hostname, dataPoints);
         return Ok(hostStatusReply);
     }
 }

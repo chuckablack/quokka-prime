@@ -16,24 +16,24 @@ public class Device : BaseModel
 
     public string name { get; set; }
     
-    public string? hostname { get; set; }
-    public string? ip_address { get; set; }
-    public string? vendor { get; set; }
-    public string? model { get; set; }
-    public string? os { get; set; }
-    public string? os_version { get; set; }
+    public string hostname { get; set; } = "";
+    public string ip_address { get; set; } = "";
+    public string vendor { get; set; } = "";
+    public string model { get; set; } = "";
+    public string os { get; set; } = "";
+    public string os_version { get; set; } = "";
 
-    public string? username { get; set; }
-    public string? password { get; set; }
-    public int? ssh_port { get; set; }
+    public string username { get; set; } = "";
+    public string password { get; set; } = "";
+    public int ssh_port { get; set; } = 22;
 
-    public string? last_heard { get; set; }
+    public string last_heard { get; set; } = "";
 
-    public bool? availability { get; set; }
-    public string? response_time { get; set; }
+    public bool availability { get; set; } = false;
+    public string response_time { get; set; } = "";
 
-    public float? sla_response_time { get; set; }
-    public float? sla_availability { get; set; }
+    public float sla_response_time { get; set; } = 0;
+    public float sla_availability { get; set; } = 0;
 
     public Device(string name)
     {

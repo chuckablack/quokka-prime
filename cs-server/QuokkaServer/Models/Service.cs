@@ -15,17 +15,17 @@ public class Service : BaseModel
     // public ObjectId _id { get; set; }
 
     public string name { get; set; }
-    public string? type { get; set; }
-    public string? target { get; set; }
-    public string? data { get; set; }
+    public string type { get; set; } = "";
+    public string target { get; set; } = "";
+    public string data { get; set; } = "";
 
-    public string? last_heard { get; set; }
+    public string last_heard { get; set; } = "";
 
-    public bool? availability { get; set; }
-    public string? response_time { get; set; }
+    public bool availability { get; set; } = false;
+    public string response_time { get; set; } = "";
 
-    public float? sla_response_time { get; set; }
-    public float? sla_availability { get; set; }
+    public float sla_response_time { get; set; } = 0;
+    public float sla_availability { get; set; } = 0;
 
     public Service(string name)
     {

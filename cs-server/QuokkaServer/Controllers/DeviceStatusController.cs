@@ -23,7 +23,7 @@ public class DeviceStatusController : ControllerBase
         Dictionary<string, object> deviceStatusReply = new Dictionary<string, object>();
         deviceStatusReply["device"] = device;
         deviceStatusReply["status"] = DeviceStatus.GetDeviceStatus(name, dataPoints);
-        deviceStatusReply["summary"] = new List<DeviceStatus>();
+        deviceStatusReply["summary"] = DeviceStatusSummary.GetDeviceStatusSummary(name, dataPoints);
         return Ok(deviceStatusReply);
     }
 }

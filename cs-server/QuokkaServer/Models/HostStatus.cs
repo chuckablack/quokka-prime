@@ -15,9 +15,9 @@ public class HostStatus : BaseModel
     // public ObjectId _id { get; set; }
 
     public string hostname { get; set; }
-    public string? time { get; set; }
-    public bool? availability { get; set; }
-    public string? response_time { get; set; }
+    public string time { get; set; }
+    public bool availability { get; set; }
+    public string response_time { get; set; }
 
     public HostStatus(Host host)
     {
@@ -37,7 +37,7 @@ public class HostStatus : BaseModel
         var hostStatusData = new List<HostStatus>();
         foreach (BsonDocument hostStatusBson in hostStatusDataBson)
         {
-            Console.WriteLine("--- host ---> " + hostStatusBson.ToString());
+            Console.WriteLine("--- host status ---> " + hostStatusBson.ToString());
             HostStatus hostStatusItem = BsonSerializer.Deserialize<HostStatus>(hostStatusBson);
             hostStatusData.Add(hostStatusItem);
         }

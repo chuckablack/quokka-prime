@@ -13,9 +13,9 @@ public class ServiceStatus : BaseModel
     //       used throughout the quokka project
 
     public string name { get; set; }
-    public string? time { get; set; }
-    public bool? availability { get; set; }
-    public string? response_time { get; set; }
+    public string time { get; set; }
+    public bool availability { get; set; }
+    public string response_time { get; set; }
 
     public ServiceStatus(Service service)
     {

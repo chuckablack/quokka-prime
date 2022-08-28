@@ -15,9 +15,9 @@ public class DeviceStatus : BaseModel
     // public ObjectId _id { get; set; }
 
     public string name { get; set; }
-    public string? time { get; set; }
-    public bool? availability { get; set; }
-    public string? response_time { get; set; }
+    public string time { get; set; }
+    public bool availability { get; set; }
+    public string response_time { get; set; }
 
     public DeviceStatus(Device device)
     {
