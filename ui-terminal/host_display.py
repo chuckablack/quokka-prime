@@ -39,7 +39,10 @@ def set_missing_fields(host):
 
 def print_hosts(hosts, previous_hosts):
 
-    subprocess.call("clear" if os.name == "posix" else "cls")
+    if os.name == "posix": subprocess.call("clear")
+    else:                  os.system("cls")
+
+    # subprocess.call("clear" if os.name == "posix" else "cls")
     print(
         "\n  __Hostname______________     ___IP_address___   ___MAC_address___   "
         + "__Avail__   __Last_Heard___________   __Open_TCP_Ports_____\n"

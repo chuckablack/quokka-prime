@@ -88,7 +88,7 @@ class IcmpMonitor(ServiceMonitor):
         try:
             time_start = time.time()
             subprocess.check_output(
-                ["ping", "-c3", "-n", "-i0.5", "-W2", self.target]
+                ["ping", self.target]
             )
             return True, time.time()-time_start
 

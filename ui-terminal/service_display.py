@@ -31,7 +31,9 @@ def get_services():
 
 def print_services(services, previous_services):
 
-    subprocess.call("clear" if os.name == "posix" else "cls")
+    if os.name == "posix": subprocess.call("clear")
+    else:                  os.system("cls")
+
     print(
         "\n  __Service_Name___________   __Type__  ________Target_________ "
         + " ________Data______ _Avail_ ___Rsp_  __Last_Heard___________\n"

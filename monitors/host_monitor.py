@@ -59,14 +59,24 @@ def discovery():
             hostname = (str(ip_addr), [], [str(ip_addr)])
         last_heard = str(datetime.now())[:-3]
 
-        host = {
-            "ip_address": ip_addr,
-            "mac_address": mac_addr,
-            "hostname": hostname[0],
-            "last_heard": last_heard,
-            "availability": True,
-            "response_time": "0"
-        }
+        hosts = get_hosts()
+
+        if hostname[0] in hosts:
+            host = hosts[hostname[0]]
+            host["ip_address"] = ip_addr
+            host["mac_address"] = mac_addr
+            host["last_heard"] = last_heard
+
+        else:
+            host = {
+                "ip_address": ip_addr,
+                "mac_address": mac_addr,
+                "hostname": hostname[0],
+                "last_heard": last_heard,
+                "availability": True,
+                "response_time": "0"
+            }
+
         update_host(host)
 
 
@@ -104,16 +114,16 @@ def ping_host(host):
     try:
         print(f"----> Pinging host: {host['hostname']}", end="")
         ping_output = subprocess.check_output(
-            ["ping", "-c3", "-n", "-i0.5", "-W2", host["ip_address"]]
+            ["ping", host["ip_address"]]
         )
         host["availability"] = True
         host["response_time"] = get_response_time(str(ping_output))
         host["last_heard"] = str(datetime.now())[:-3]
         print(f" Host ping successful: {host['hostname']}")
 
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as e:
         host["availability"] = False
-        print(f" !!!  Host ping failed: {host['hostname']}")
+        print(f" !!!  Host ping failed: {host['hostname']}: {e}")
 
     update_host(host)
 
