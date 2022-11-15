@@ -43,7 +43,9 @@ def get_compliance_color(device):
 
 def print_devices(devices, previous_devices):
 
-    subprocess.call("clear" if os.name == "posix" else "cls")
+    if os.name == "posix": subprocess.call("clear")
+    else:                  os.system("cls")
+
     print(
         "\n  __Device_Name___________   ___IP_address___  ______Model_____ "
         + "  _Version_  _Avail_ __Rsp_  __Last_Heard___________\n"
