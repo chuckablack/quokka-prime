@@ -136,7 +136,7 @@ def main():
     while True:
 
         if (datetime.now() - last_discovery).total_seconds() > DISCOVERY_INTERVAL:
-            # discovery()
+            discovery()
             last_discovery = datetime.now()
 
         hosts = get_hosts()
