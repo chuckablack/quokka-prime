@@ -12,7 +12,7 @@ def remove_internals(d):
 
 def get_all_hosts():
 
-    hosts = {host["hostname"]: remove_internals(host) for host in db.hosts.find()}
+    hosts = {host["hostname"]: remove_internals(host) for host in db.hosts.find().sort("hostname")}
     return hosts
 
 

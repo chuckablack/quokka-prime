@@ -114,7 +114,7 @@ def ping_host(host):
     try:
         print(f"----> Pinging host: {host['hostname']}", end="")
         ping_output = subprocess.check_output(
-            ["ping", host["ip_address"]]
+            ["ping", host["ip_address"], "-c 3"]
         )
         host["availability"] = True
         host["response_time"] = get_response_time(str(ping_output))
@@ -136,7 +136,7 @@ def main():
     while True:
 
         if (datetime.now() - last_discovery).total_seconds() > DISCOVERY_INTERVAL:
-            discovery()
+            # discovery()
             last_discovery = datetime.now()
 
         hosts = get_hosts()
