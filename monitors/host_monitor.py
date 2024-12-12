@@ -14,10 +14,12 @@ DISCOVERY_INTERVAL = 300
 parser = argparse.ArgumentParser(description="Host Monitor")
 parser.add_argument('--poolsize', default=10, help='Size of the threadpool')
 parser.add_argument('--quokka', default="localhost:5001", help='Hostname/IP and port of the quokka server')
+parser.add_argument('--subnet', default="192.168.68.0/24", help='Subnet to be discovered/monitored')
 
 args = parser.parse_args()
 threadpool_size = int(args.poolsize)
 quokka = args.quokka
+subnet = args.subnet
 
 
 def get_hosts():
@@ -45,7 +47,7 @@ def discovery():
     print(
         "\n\n----- Discovery hosts on network using arping() function ---------------------"
     )
-    ans, unans = scapy.arping("10.0.0.0/24")
+    ans, unans = scapy.arping(subnet)
     ans.summary()
 
     for res in ans.res:
