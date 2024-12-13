@@ -16,6 +16,15 @@ def get_all_hosts():
     return hosts
 
 
+def get_local_hostname(ip):
+    result = db.localHostnames.find_one({"ip": ip})
+    if not result:
+        return None
+    else:
+        print(f"got hostname={result["hostname"]}")
+        return result["hostname"]
+
+
 def get_host(hostname):
 
     host = db.hosts.find_one({"hostname": hostname})
@@ -49,6 +58,15 @@ def set_host(host):
         "response_time": host["response_time"]
     }
     db.hosts_status.insert_one(host_status)
+
+
+def set_local_hostname(ip, hostname):
+
+    existing_ip_hostname = db.localHostnames.find_one({"ip": ip})
+    if not existing_ip_hostname:
+        db.localHostnames.insert_one({"ip": ip, "hostname": hostname})
+    else:
+        db.hosts.update_one({"ip": ip}, {"$set": {"ip": ip, "hostname": hostname}})
 
 
 def get_all_services():

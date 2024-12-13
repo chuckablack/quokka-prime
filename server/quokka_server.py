@@ -19,6 +19,7 @@ api = Api(quokka_app, version="1.0", title="Quokka", description="Quokka for 52-
 ApiModels.set_api_models(api)
 
 from db_apis import get_all_hosts, set_host, get_host, get_host_status, get_host_status_summary
+from db_apis import get_local_hostname, set_local_hostname
 from db_apis import get_all_devices, set_device, get_device, get_device_status, get_device_status_summary
 from db_apis import get_all_services, set_service, get_service, get_service_status, get_service_status_summary
 from db_apis import get_capture, get_portscan, get_traceroute
@@ -416,3 +417,43 @@ class DeviceStatusEndpoint(Resource):
                          "status": get_device_status(name, int(datapoints)),
                          "summary": get_device_status_summary(name, int(datapoints))}
         return device_status, 200
+
+
+@api.route("/hostname")
+class HostnameEndpoint(Resource):
+
+    # decorators = [limiter.limit("120/minute")]
+
+    @staticmethod
+    @api.doc(params={"ip": "IP address of host to get hostname for"})
+    @api.response(200, 'Success')
+    @api.response(400, 'Must provide ip address to get hostname')
+    def get():
+        ip = request.args.get("ip")
+
+        if not ip:
+            return "Must provide ip address to get hostname", 400
+
+        local_hostname = get_local_hostname(ip)
+        if not local_hostname:
+            return f"Unknown host: {ip}", 400
+
+        hostname = local_hostname
+        return hostname, 200
+
+    @staticmethod
+    @api.doc(params={"ip": "ip address of the hostname to add",
+                     "hostname": "Hostname of host to add or update"})
+    @api.response(204, 'Success')
+    @api.response(400, 'Must provide hostname to add/update hostname')
+    @api.response(400, 'Must provide ip address to add/update hostname')
+    def put():
+        ip = request.args.get("ip")
+        if not ip:
+            return "Must provide ip address to add/update hostname", 400
+        hostname = request.args.get("hostname")
+        if not hostname:
+            return "Must provide hostname to add/update hostname", 400
+
+        set_local_hostname(ip, hostname)
+        return {}, 204

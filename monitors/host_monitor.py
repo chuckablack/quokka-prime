@@ -41,7 +41,28 @@ def get_hosts():
     return response.json()
 
 
+def get_local_hostname(ip):
+
+    global quokka
+
+    print(f"\n\n----> Retrieving hostname for {ip}")
+    try:
+        response = requests.get("http://"+quokka+"/hostname", params={"ip": ip})
+    except requests.exceptions.ConnectionError as e:
+        print(f" !!!  Exception trying to get hostname for ip {ip} via REST API: {e}")
+        return
+
+    if response.status_code != 200:
+        print(f" !!!  Failed to retrieve hostname from server: {response.reason}")
+        return {}
+
+    print(f"Hostname successfully retrieved: {response.json}")
+    return response.json()
+
+
 def discovery():
+
+    global subnet
 
     # DISCOVER HOSTS ON NETWORK USING ARPING FUNCTION
     print(
@@ -58,11 +79,18 @@ def discovery():
         try:
             hostname = socket.gethostbyaddr(str(ip_addr))
         except (socket.error, socket.gaierror):
-            hostname = (str(ip_addr), [], [str(ip_addr)])
+            local_hostname = get_local_hostname(ip_addr)
+            print("local_hostname=", local_hostname)
+            if local_hostname:
+                hostname = (local_hostname, [], [local_hostname])
+                print("hostname=", hostname)
+            else:
+                hostname = (str(ip_addr), [], [str(ip_addr)])
         last_heard = str(datetime.now())[:-3]
 
         hosts = get_hosts()
 
+        print("hostname[0]=", hostname[0])
         if hostname[0] in hosts:
             host = hosts[hostname[0]]
             host["ip_address"] = ip_addr
